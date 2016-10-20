@@ -252,9 +252,7 @@ class DefaultController extends CrudController
             $query->setParameter('id', $usuario->getId());
             $query->execute();
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
             
         }
 
