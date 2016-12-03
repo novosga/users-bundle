@@ -1,17 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Novo SGA project.
+ *
+ * (c) Rogerio Lino <rogeriolino@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Novosga\UsersBundle\Controller;
 
 use Exception;
-use Novosga\Entity\Lotacao;
+use Novosga\Entity\Cargo;
 use Novosga\Entity\Usuario;
-use AppBundle\Form\UsuarioType;
+use Novosga\UsersBundle\Form\UsuarioType;
 use Mangati\BaseBundle\Controller\CrudController;
 use Mangati\BaseBundle\Event\CrudEvent;
 use Mangati\BaseBundle\Event\CrudEvents;
 use Novosga\Http\Envelope;
-use Novosga\Service\ServicoService;
-use Novosga\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -36,12 +43,6 @@ class DefaultController extends CrudController
      */
     public function indexAction(Request $request) 
     {
-        $unidade = $request->getSession()->get('unidade');
-        
-        if (!$unidade) {
-            return $this->redirectToRoute('home');
-        }
-        
         return $this->render('NovosgaUsersBundle:default:index.html.twig');
     }
    
@@ -54,11 +55,7 @@ class DefaultController extends CrudController
     public function searchAction(Request $request) 
     {
         $usuario = $this->getUser();
-        $unidade = $request->getSession()->get('unidade');
-        
-        if (!$usuario || !$unidade) {
-            return $this->redirectToRoute('home');
-        }
+        $unidade = $usuario->getLotacao()->getUnidade();
         
         $em = $this->getDoctrine()->getManager();
         
@@ -67,9 +64,9 @@ class DefaultController extends CrudController
                 ->select('e')
                 ->from(Usuario::class, 'e')
                 ->join('e.lotacoes', 'l')
-                ->where('l.grupo = :grupo')
+                ->where('l.unidade = :unidade')
                 ->setParameters([
-                    'grupo' => $unidade->getGrupo()
+                    'unidade' => $unidade
                 ])
                 ->getQuery();
         
@@ -90,140 +87,19 @@ class DefaultController extends CrudController
         $em = $this->getDoctrine()->getManager();
         
         $this
-            ->addEventListener(CrudEvents::FORM_RENDER, function (CrudEvent $event) use ($em) {
-                $params = $event->getData();
-                $entity = $params['entity'];
-
-                // lotacoes do usuario
-                $rs = $em->getRepository(\Novosga\Entity\Lotacao::class)
-                        ->getLotacoes($entity);
-                $lotacoes = [];
-                foreach ($rs as $lotacao) {
-                    $lotacoes[] = [
-                        'grupo_id' => $lotacao->getGrupo()->getId(),
-                        'grupo'    => $lotacao->getGrupo()->getNome(),
-                        'cargo_id' => $lotacao->getCargo()->getId(),
-                        'cargo'    => $lotacao->getCargo()->getNome(),
-                    ];
-                }
-                // servicos do usuario
-                $rs = $em->getRepository(\Novosga\Entity\ServicoUsuario::class)
-                        ->findByUsuario($entity);
-                $servicos = [];
-                foreach ($rs as $servico) {
-                    $servicos[] = [
-                        'unidade_id' => $servico->getUnidade()->getId(),
-                        'unidade'    => $servico->getUnidade()->getNome(),
-                        'servico_id' => $servico->getServico()->getId(),
-                        'servico'    => $servico->getServico()->getNome(),
-                    ];
-                }
-
-                // unidades
-                $unidades = $em->getRepository(\Novosga\Entity\Unidade::class)->findAll();
-
-                // cargos disponiveis
-                $cargos = $em->getRepository(\Novosga\Entity\Cargo::class)->findAll();
-
-                $params['unidades'] = $unidades;
-                $params['cargos']   = $cargos;
-                $params['lotacoes'] = $lotacoes;
-                $params['servicos'] = $servicos;
+            ->addEventListener(CrudEvents::PRE_SAVE, function (CrudEvent $event) use ($em) {
             });
         
         return $this->edit('NovosgaUsersBundle:default:edit.html.twig', $request, $id);
     }
 
     /**
-     * Retorna os grupos disponíveis para serem atribuidos ao usuário. Descartando os grupos com ids informados no parâmetro exceto.
-     *
-     * @param array $exceto
+     * @Route("/cargos/{id}")
      */
-    private function grupos_disponiveis(array $exceto)
-    {
-        // grupos disponiveis (grupos que o usuario nao esta vinculados e que nao sao filhos e nem pai do que esta)
-        $query = $this->em()->createQuery("
-            SELECT
-                e
-            FROM
-                Novosga\Entity\Grupo e
-            WHERE
-                NOT EXISTS (
-                    SELECT
-                        g2.id
-                    FROM
-                        Novosga\Entity\Grupo g2
-                    WHERE
-                        (
-                            g2.left <= e.left AND g2.right >= e.right OR
-                            g2.left >= e.left AND g2.right <= e.right
-                        )
-                        AND g2.id IN (:exceto))
-            ORDER BY
-                e.left, e.nome
-        ");
-        $query->setParameter('exceto', $exceto);
-
-        return $query->getResult();
-    }
-
-    /**
-     * Retorna os grupos disponíveis para serem atribuidos ao usuário. Descartando os grupos com ids informados no parâmetro exceto.
-     *
-     * @param Novosga\Context $context
-     */
-    public function grupos(Context $context)
-    {
-        $exceto = $request->get('exceto');
-        $exceto = Arrays::valuesToInt(explode(',', $exceto));
-        $envelope = new Envelope();
-        $grupos = $this->grupos_disponiveis($exceto);
-        $data = [];
-        foreach ($grupos as $g) {
-            $data[] = [
-                'id'   => $g->getId(), 
-                'nome' => $g->getNome()
-            ];
-        }
-        $envelope->setData($data);
-
-        return $this->json($envelope);
-    }
-
-    /**
-     * Retorna as permissões do cargo informado.
-     *
-     * @param Novosga\Context $context
-     */
-    public function permissoes_cargo(Context $context)
+    public function cargosAction(Request $request, Cargo $cargo)
     {
         $envelope = new Envelope();
-        $id = (int) $request->get('cargo');
-        $query = $this->em()->createQuery("SELECT m.nome FROM Novosga\Entity\Permissao e JOIN e.modulo m WHERE e.cargo = :cargo ORDER BY m.nome");
-        $query->setParameter('cargo', $id);
-        $data = $query->getResult();
-        $envelope->setData($data);
-
-        return $this->json($envelope);
-    }
-
-    /**
-     * Retorna os serviços habilitados na unidade informada. Descartando os serviços com ids informados no parâmetro exceto.
-     *
-     * @param Novosga\Context $context
-     */
-    public function servicos_unidade(Context $context)
-    {
-        $envelope = new Envelope();
-        $id = (int) $request->get('unidade');
-
-        $exceto = $request->get('exceto');
-        $exceto = Arrays::valuesToInt(explode(',', $exceto));
-        $exceto = implode(',', $exceto);
-
-        $service = new ServicoService($this->em());
-        $data = $service->servicosUnidade($id, "e.status = 1 AND s.id NOT IN ($exceto)");
-        $envelope->setData($data);
+        $envelope->setData($cargo);
 
         return $this->json($envelope);
     }
@@ -262,7 +138,7 @@ class DefaultController extends CrudController
     protected function editFormOptions(Request $request, $entity)
     {
         $options = parent::editFormOptions($request, $entity);
-        $options['entity'] = $entity;
+        $options['usuario'] = $this->getUser();
         return $options;
     }
 

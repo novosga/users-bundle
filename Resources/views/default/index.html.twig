@@ -1,6 +1,14 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+    <h1>
+        <i class="fa fa-users" aria-hidden="true"></i>
+        {% trans %}Usuários{% endtrans %}
+        <small>
+            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+        </small>
+    </h1>
+    
     <table id="datatable" class="table table-striped">
         <thead>
             <th>#</th>
