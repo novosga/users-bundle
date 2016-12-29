@@ -22,9 +22,16 @@
     </table>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset("bundles/novosgausers/css/jquery.dataTables.min.css") }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset("bundles/novosgausers/css/dataTables.bootstrap.min.css") }}" />
+{% endblock %}
+    
 {% block javascripts %}
     {{ parent() }}
-    
+    <script type="text/javascript" src="{{ asset("bundles/novosgausers/js/jquery.dataTables.min.js") }}"></script>
+    <script type="text/javascript" src="{{ asset("bundles/novosgausers/js/dataTables.bootstrap.min.js") }}"></script>
     <script>
         (function() {
             'use strict'
