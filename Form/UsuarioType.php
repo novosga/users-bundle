@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Email;
 
 class UsuarioType extends AbstractType
 {
@@ -56,6 +58,13 @@ class UsuarioType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                     new Length([ 'max' => 20 ]),
+                ]
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'E-mail',
+                'required' => false,
+                'constraints' => [
+                    new Email(),
                 ]
             ])
             ->add('sobrenome', TextType::class, [
