@@ -23,6 +23,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -45,7 +46,7 @@ class UsuarioType extends AbstractType
             ->add('login', TextType::class, [
                 'label' => 'Nome de usuário',
                 'attr' => [
-                    'onkeyup' => 'SGA.Form.loginValue(this)'
+                    'oninput' => "this.value = this.value.replace(/([^\w\d\.])+/g, '')",
                 ],
                 'constraints' => [
                     new NotBlank(),
@@ -57,7 +58,7 @@ class UsuarioType extends AbstractType
                 'label' => 'Nome',
                 'constraints' => [
                     new NotBlank(),
-                    new Length([ 'max' => 20 ]),
+                    new Length([ 'min' => 3, 'max' => 20 ]),
                 ]
             ])
             ->add('email', EmailType::class, [
@@ -74,20 +75,17 @@ class UsuarioType extends AbstractType
                     new Length([ 'max' => 100 ]),
                 ]
             ])
-        ;
-        
-        if ($usuario->isAdmin()) {
-            $builder
-                ->add('lotacoes', CollectionType::class, [
-                    'entry_type' => LotacaoType::class,
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                    'constraints' => [
-                        new Count([ 'min' => 1 ]),
-                    ]
-                ]);
-        }
+            ->add('lotacoes', CollectionType::class, [
+                'entry_type' => LotacaoType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'error_bubbling' => true,
+                'constraints' => [
+                    new Valid(),
+                    new Count([ 'min' => 1 ]),
+                ],
+            ]);
         
         if ($entity->getId()) {
             $builder->add('status', CheckboxType::class, [
@@ -101,9 +99,9 @@ class UsuarioType extends AbstractType
             $builder
                 ->add('senha', PasswordType::class, [
                     'label' => 'Senha',
-                'constraints' => [
-                    
-                ]
+                    'constraints' => [
+
+                    ]
                 ])
                 ->add('confirmacaoSenha', PasswordType::class, [
                     'label' => 'Confirmação da senha',
@@ -116,7 +114,7 @@ class UsuarioType extends AbstractType
             $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $entity = $event->getData();
                 $form = $event->getForm();
-                $confirmacao = $form->getConfirmacaoSenha();
+                $confirmacao = $form->get('confirmacaoSenha');
                 
                 if ($entity->getSenha() !== $confirmacao->getData()) {
                     $confirmacao->addError(new FormError('A confirmação de senha não confere com a senha.'));
@@ -135,7 +133,7 @@ class UsuarioType extends AbstractType
             ->setDefaults([
                 'data_class' => Usuario::class
             ])
-            ->setRequired('usuario')
+            ->setRequired(['usuario'])
             ->setAllowedTypes('usuario', Usuario::class);
     }
 }

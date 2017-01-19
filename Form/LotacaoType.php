@@ -12,10 +12,11 @@
 namespace Novosga\UsersBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
-use Novosga\Entity\Cargo;
+use Novosga\Entity\Perfil;
 use Novosga\Entity\Lotacao;
 use Novosga\Entity\Unidade;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Mangati\BaseBundle\Form\Type\EntityTextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,8 +39,8 @@ class LotacaoType extends AbstractType
                             ->orderBy('e.nome', 'ASC');
                 }
             ])
-            ->add('cargo', EntityType::class, [
-                'class' => Cargo::class,
+            ->add('perfil', EntityType::class, [
+                'class' => Perfil::class,
                 'placeholder' => '',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')

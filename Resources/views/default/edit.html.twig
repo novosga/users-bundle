@@ -24,12 +24,29 @@
 
                     {{ form_row(form.login) }}
 
-                    {{ form_row(form.nome) }}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {{ form_row(form.nome) }}
+                        </div>
+                        <div class="col-sm-8">
+                            {{ form_row(form.sobrenome) }}
+                        </div>
+                    </div>
 
-                    {{ form_row(form.sobrenome) }}
+                    {{ form_row(form.email) }}
 
                     {% if entity.id %}
-                        {{ form_row(form.status) }}
+                        <div class="row">
+                            <div class="col-xs-6">
+                                {{ form_row(form.status) }}
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dialog-senha">
+                                    <i class="fa fa-lock"></i>
+                                    {% trans %}Alterar senha{% endtrans %}
+                                </button>
+                            </div>
+                        </div>
                     {% endif %}
 
                     {% if not entity.id %}
@@ -43,43 +60,9 @@
                 <fieldset>
                     <legend>{% trans %}Lotações{% endtrans %}</legend>
 
-                    <p class="info">{% trans %}Lotação é utilizada para definir o papel e acesso do usuário às unidades.{% endtrans %}</p>
+                    <p class="info">{% trans %}Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.{% endtrans %}</p>
 
-                    {% if form.lotacoes is defined %}
-                        {{  form_widget(form.lotacoes) }}
-                    {% else %}
-                        <table id="lotacoes-view" class="table vue-users">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        {% trans %}Unidade{% endtrans %}
-                                    </th>
-                                    <th>
-                                        {% trans %}Cargo{% endtrans %}
-                                    </th>
-                                    <th>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for lotacao in entity.lotacoes %}
-                                    <tr>
-                                        <td>
-                                            {{ lotacao.unidade }}
-                                        </td>
-                                        <td>
-                                            {{ lotacao.cargo }}
-                                        </td>
-                                        <td>
-                                            <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-default btn-view-cargo" data-id="{{ lotacao.cargo.id }}">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
+                    {{ form_row(form.lotacoes, { label: false }) }}
 
                 </fieldset>
             </div>
@@ -98,16 +81,16 @@
 
     {{ form_end(form) }}
 
-
+    
     {# permissoes #}
-    <div id="dialog-cargo" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="dialog-perfil" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans %}Cargo{% endtrans %}</h4>
+                    <h4 class="modal-title">{% trans %}Perfil{% endtrans %}</h4>
                 </div>
-                <div class="modal-body" v-if="cargo">
+                <div class="modal-body" v-if="perfil">
                     <table class="table table-bordered">
                         <tr>
                             <th>
@@ -115,7 +98,7 @@
                             </th>
                             <td>
                                 {% verbatim %}
-                                    {{cargo.nome}}
+                                    {{perfil.nome}}
                                 {% endverbatim %}
                             </td>
                         </tr>
@@ -125,7 +108,7 @@
                             </th>
                             <td>
                                 {% verbatim %}
-                                    {{cargo.descricao}}
+                                    {{perfil.descricao}}
                                 {% endverbatim %}
                             </td>
                         </tr>
@@ -136,7 +119,7 @@
                             <td>
                                 {% verbatim %}
                                     <ul>
-                                        <li v-for="modulo in cargo.modulos">
+                                        <li v-for="modulo in perfil.modulos">
                                             {{modulo}}
                                         </li>
                                     </ul>
@@ -154,24 +137,27 @@
         <div id="dialog-senha" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">{% trans %}Alterar senha{% endtrans %}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input id="senha_id" type="hidden" value="{{ entity.id }}" />
-                        <div class="form-group required">
-                            <label for="senha_senha">{% trans %}Senha{% endtrans %}</label>
-                            <input id="senha_senha" type="password" class="form-control" />
+                    <form>
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">{% trans %}Alterar senha{% endtrans %}</h4>
                         </div>
-                        <div class="form-group required">
-                            <label for="senha_confirmacao">{% trans %}Confirmar senha{% endtrans %}</label>
-                            <input id="senha_confirmacao" type="password" class="form-control" />
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="senha_senha">{% trans %}Nova Senha{% endtrans %}</label>
+                                <input id="senha_senha" type="password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senha_confirmacao">{% trans %}Confirmar senha{% endtrans %}</label>
+                                <input id="senha_confirmacao" type="password" class="form-control" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="App.Usuarios.alterarSenha()">{% trans %}Alterar{% endtrans %}</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                {% trans %}Alterar{% endtrans %}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -180,28 +166,11 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        var unidades = [ {% for unidade in unidades %}{{ unidade.id }},{% endfor %} ];
+    </script>
     <script src="{{ asset('bundles/mangatibase/js/symfony-collection.js') }}"></script>
     <script src="{{ asset('bundles/novosgausers/js/script.js') }}"></script>
-{% endblock %}
-
-{% block _usuario_lotacoes_entry_widget %}
-    <tr>
-        <td>
-            {{ form_row(form.unidade, { label: false }) }}
-        </td>
-        <td>
-            {{ form_row(form.cargo, { label: false, attr: { class: 'cargo' } }) }}
-        </td>
-        <td>
-            <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-default btn-view-cargo">
-                <i class="fa fa-eye"></i>
-            </button>
-                
-            <button type="button" title="{% trans %}Remover{% endtrans %}" class="btn btn-danger btn-remove">
-                <i class="fa fa-remove"></i>
-            </button>
-        </td>
-    </tr>
 {% endblock %}
 
 {% block _usuario_lotacoes_widget %}
@@ -213,7 +182,7 @@
         <thead>
             <tr>
                 <th>{% trans %}Unidade{% endtrans %}</th>
-                <th>{% trans %}Cargo{% endtrans %}</th>
+                <th>{% trans %}Perfil{% endtrans %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -226,7 +195,7 @@
             <tr>
                 <td colspan="2">
                 </td>
-                <td>
+                <td class="text-right">
                     <button type="button" id="btn-add-lotacao" class="btn btn-default">
                         <span class="glyphicon glyphicon-plus"></span>&nbsp;
                         {% trans %}Adicionar{% endtrans %}
@@ -235,4 +204,34 @@
             </tr>
         </tfoot>
     </table>
+{% endblock %}
+
+{% block _usuario_lotacoes_entry_widget %}
+    <tr>
+        <td>
+            {% if not form.unidade.vars.errors|length and form.vars.data %}
+                {{ form.vars.data.unidade }}
+                <input type="hidden" name="{{ form.unidade.vars.full_name }}" value="{{ form.unidade.vars.data.id }}" class="unidade">
+            {% else %}
+                {{ form_row(form.unidade, { label: false, attr: { class: 'unidade' } }) }}
+            {% endif %}
+        </td>
+        <td>
+            {% if not form.perfil.vars.errors|length and form.vars.data %}
+                {{ form.vars.data.perfil }}
+                <input type="hidden" name="{{ form.perfil.vars.full_name }}" value="{{ form.perfil.vars.data.id }}" class="perfil">
+            {% else %}
+                {{ form_row(form.perfil, { label: false, attr: { class: 'perfil' } }) }}
+            {% endif %}
+        </td>
+        <td class="text-right text-nowrap">
+            <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-default btn-view-perfil">
+                <i class="fa fa-eye"></i>
+            </button>
+                
+            <button type="button" title="{% trans %}Remover{% endtrans %}" class="btn btn-danger btn-remove">
+                <i class="fa fa-remove"></i>
+            </button>
+        </td>
+    </tr>
 {% endblock %}

@@ -12,8 +12,9 @@
 namespace Novosga\UsersBundle\Controller;
 
 use Exception;
-use Novosga\Entity\Cargo;
+use Novosga\Entity\Perfil;
 use Novosga\Entity\Usuario;
+use Novosga\Entity\Unidade;
 use Novosga\UsersBundle\Form\UsuarioType;
 use Mangati\BaseBundle\Controller\CrudController;
 use Mangati\BaseBundle\Event\CrudEvent;
@@ -85,21 +86,103 @@ class DefaultController extends CrudController
     public function editAction(Request $request, $id = 0)
     {
         $em = $this->getDoctrine()->getManager();
-        
+        $currentUser = $this->getUser();
+        $unidades    = $em->getRepository(Unidade::class)->findByUsuario($currentUser);
+                
         $this
-            ->addEventListener(CrudEvents::PRE_SAVE, function (CrudEvent $event) use ($em) {
-            });
+            ->addEventListener(CrudEvents::FORM_RENDER, function (CrudEvent $event) use ($em, $unidades) {
+                $params = $event->getData();
+                $params['unidades'] = $unidades;
+            })
+            ->addEventListener(CrudEvents::PRE_EDIT, function (CrudEvent $event) use ($em, $unidades) {
+                $usuario  = $event->getData();
+                $lotacoes = $usuario->getLotacoes()->toArray();
+                
+                $existe = false;
+                
+                foreach ($lotacoes as $lotacao) {
+                    if (in_array($lotacao->getUnidade(), $unidades)) {
+                        $existe = true;
+                        break;
+                    }
+                }
+                
+                if (!$existe) {
+                    throw new Exception('Permissão negada');
+                }
+            })
+            ->addEventListener(CrudEvents::PRE_SAVE, function (CrudEvent $event) use ($em, $unidades) {
+                $usuario = $event->getData();
+                
+                if ($usuario->getId()) {
+                    $lotacoesRemovidas = $usuario->getLotacoes()->getDeleteDiff();
+                    $lotacoesInseridas = $usuario->getLotacoes()->getInsertDiff();
+
+                    foreach ($lotacoesRemovidas as $lotacao) {
+                        if (!in_array($lotacao->getUnidade(), $unidades)) {
+                            throw new \Exception('Tentando remover lotação de unidade sem permissão');
+                        }
+                    }
+                    
+                    foreach ($lotacoesInseridas as $lotacao) {
+                        if (!in_array($lotacao->getUnidade(), $unidades)) {
+                            throw new \Exception('Tentando inserir lotação de unidade sem permissão');
+                        }
+                    }
+
+                    foreach ($usuario->getLotacoes() as $lotacao) {
+                        if (!in_array($lotacao, $lotacoesRemovidas) && !in_array($lotacao, $lotacoesInseridas)) {
+                            $em->refresh($lotacao);
+                        }
+                    }
+                    
+                    $lotacoes = $usuario->getLotacoes()->toArray();
+                    $lotacao = end($lotacoes);
+                    $em->getRepository(Usuario::class)->updateUnidade($usuario, $lotacao->getUnidade());
+                } else {
+                    foreach ($usuario->getLotacoes() as $lotacao) {
+                        if (!in_array($lotacao->getUnidade(), $unidades)) {
+                            throw new \Exception('Tentando inserir lotação de unidade sem permissão');
+                        }
+                    }
+                    
+                    $usuario->setStatus(true);
+                    $usuario->setAlgorithm('md5');
+                    $usuario->setAdmin(false);
+                    $usuario->setSalt(uniqid());
+                }
+            })
+            ;
         
         return $this->edit('NovosgaUsersBundle:default:edit.html.twig', $request, $id);
     }
 
     /**
-     * @Route("/cargos/{id}")
+     * @Route("/perfis/{id}")
      */
-    public function cargosAction(Request $request, Cargo $cargo)
+    public function perfisAction(Request $request, Perfil $perfil)
     {
         $envelope = new Envelope();
-        $envelope->setData($cargo);
+        $envelope->setData($perfil);
+
+        return $this->json($envelope);
+    }
+
+    /**
+     * @Route("/unidades")
+     */
+    public function unidadesAction(Request $request)
+    {
+        $envelope = new Envelope();
+        $user = $this->getUser();
+        
+        $unidades = $this->getDoctrine()
+                        ->getManager()
+                        ->getRepository(Unidade::class)
+                        ->findByUsuario($user)
+                ;
+        
+        $envelope->setData($unidades);
 
         return $this->json($envelope);
     }

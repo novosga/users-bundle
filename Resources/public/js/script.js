@@ -5,15 +5,31 @@
 (function () {
     'use strict'
     
-    var applyViewCargoEvent = function () {
-        var className = 'btn-view-cargo';
+    $('#lotacoes .unidade').each(function () {
+        var el = $(this),
+            id = parseInt(el.val());
+        if (unidades.indexOf(id) === -1) {
+            el.parent().parent().find('.btn-remove').hide();
+        }
+    });
+    
+    var applyViewPerfilEvent = function () {
+        var className = 'btn-view-perfil';
         
-        $('#lotacoes .' + className).each(function (i, e) {
-            $(e)
+        $('select.unidade option').each(function () {
+            var el = $(this),
+                id = parseInt(el.attr('value'));
+            if (!isNaN(id) && unidades.indexOf(id) === -1) {
+                el.remove();
+            }
+        });
+        
+        $('#lotacoes .' + className).each(function () {
+            $(this)
                 .on('click', function(e) {
                     e.preventDefault();
-                    var id = $(this).parent().parent().find('.cargo').val();
-                    dialogCargo.viewCargo(id);
+                    var id = $(this).parent().parent().find('.perfil').val();
+                    dialogPerfil.viewPerfil(id);
                 })
                 .removeClass(className);
         });
@@ -21,38 +37,32 @@
     
     $('[data-prototype]').collection({
         onadd: function (evt) {
-            applyViewCargoEvent();
+            applyViewPerfilEvent();
         }
     });
     
-    $('#lotacoes-view .btn-view-cargo').on('click', function (e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        dialogCargo.viewCargo(id);
-    });
-    
-    applyViewCargoEvent();
-    
-    var dialogCargo = new Vue({
-        el: '#dialog-cargo',
+    applyViewPerfilEvent();
+        
+    var dialogPerfil = new Vue({
+        el: '#dialog-perfil',
         data: {
-            cargo: null
+            perfil: null
         },
         methods: {
-            viewCargo: function(cargoId) {
+            viewPerfil: function (id) {
                 var self = this;
                 App.ajax({
-                    url: App.url('/novosga.users/cargos/') + cargoId,
+                    url: App.url('/novosga.users/perfis/') + id,
                     success: function(response) {
-                        self.cargo = response.data;
-                        $('#dialog-cargo').modal('show')
+                        self.perfil = response.data;
+                        $('#dialog-perfil').modal('show');
                     }
                 });
             },
-
+            
             alterarSenha: function() {
                 App.ajax({
-                    url: App.url('alterar_senha'),
+                    url: App.url('/novosga.users/alterar_senha'),
                     type: 'post',
                     data: {
                         id: $('#senha_id').val(),
