@@ -81,7 +81,7 @@ class DefaultController extends CrudController
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      * 
-     * @Route("/edit/{id}")
+     * @Route("/edit/{id}", name="novosga_users_edit")
      */
     public function editAction(Request $request, $id = 0)
     {
@@ -96,23 +96,27 @@ class DefaultController extends CrudController
             })
             ->addEventListener(CrudEvents::PRE_EDIT, function (CrudEvent $event) use ($em, $unidades) {
                 $usuario  = $event->getData();
-                $lotacoes = $usuario->getLotacoes()->toArray();
                 
-                $existe = false;
+                if ($usuario->getId()) {
+                    $lotacoes = $usuario->getLotacoes()->toArray();
+                    
+                    $existe = false;
                 
-                foreach ($lotacoes as $lotacao) {
-                    if (in_array($lotacao->getUnidade(), $unidades)) {
-                        $existe = true;
-                        break;
+                    foreach ($lotacoes as $lotacao) {
+                        if (in_array($lotacao->getUnidade(), $unidades)) {
+                            $existe = true;
+                            break;
+                        }
                     }
-                }
-                
-                if (!$existe) {
-                    throw new Exception('Permissão negada');
+
+                    if (!$existe) {
+                        throw new Exception('Permissão negada');
+                    }
                 }
             })
             ->addEventListener(CrudEvents::PRE_SAVE, function (CrudEvent $event) use ($em, $unidades) {
                 $usuario = $event->getData();
+                $form    = $event->getForm();
                 
                 if ($usuario->getId()) {
                     $lotacoesRemovidas = $usuario->getLotacoes()->getDeleteDiff();
@@ -147,9 +151,16 @@ class DefaultController extends CrudController
                     }
                     
                     $usuario->setStatus(true);
-                    $usuario->setAlgorithm('md5');
+                    $usuario->setAlgorithm('bcrypt');
                     $usuario->setAdmin(false);
-                    $usuario->setSalt(uniqid());
+                    $usuario->setSalt(null);
+                    
+                    $plainPassword = $form->get('senha')->getData();
+                    
+                    $encoder = $this->container->get('security.password_encoder');
+                    $encoded = $encoder->encodePassword($usuario, $plainPassword);
+                    
+                    $usuario->setSenha($encoded);
                 }
             })
             ;

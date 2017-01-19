@@ -99,25 +99,27 @@ class UsuarioType extends AbstractType
             $builder
                 ->add('senha', PasswordType::class, [
                     'label' => 'Senha',
+                    'mapped' => false,
                     'constraints' => [
-
+                        new Length([ 'min' => 6 ]),
                     ]
                 ])
                 ->add('confirmacaoSenha', PasswordType::class, [
                     'label' => 'Confirmação da senha',
                     'mapped' => false,
                     'constraints' => [
-
+                        new Length([ 'min' => 6 ]),
                     ]
                 ]);
             
             $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                 $entity = $event->getData();
                 $form = $event->getForm();
+                $senha       = $form->get('senha');
                 $confirmacao = $form->get('confirmacaoSenha');
                 
-                if ($entity->getSenha() !== $confirmacao->getData()) {
-                    $confirmacao->addError(new FormError('A confirmação de senha não confere com a senha.'));
+                if ($senha->getData() !== $confirmacao->getData()) {
+                    $senha->addError(new FormError('A confirmação de senha não confere com a senha.'));
                 }
             });
         }

@@ -1,6 +1,11 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+    <a href="{{ path('novosga_users_edit') }}" class="btn btn-primary pull-right">
+        <i class="fa fa-plus"></i>
+        {% trans %}Novo usuário{% endtrans %}
+    </a>
+    
     <h1>
         <i class="fa fa-users" aria-hidden="true"></i>
         {% trans %}Usuários{% endtrans %}
