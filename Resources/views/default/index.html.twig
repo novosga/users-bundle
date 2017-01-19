@@ -44,8 +44,11 @@
             $('#datatable').dataTable({
                 processing: true,
                 serverSide: true,
-                searching: false,
-                ajax: '{{ path('novosga_users_search') }}',
+                searching: true,
+                ajax: {
+                    url: '{{ path('novosga_users_search') }}',
+                    type: 'post'
+                },
                 pageLength: 10,
                 columns: [
                     {
@@ -53,9 +56,12 @@
                     },
                     {
                         data: 'login',
+                        searchable: true,
                     },
                     {
-                        data: 'nome'
+                        render: function (data, type, user) {
+                            return user.nome + ' ' + user.sobrenome;
+                        }
                     },
                     {
                         data: 'status'

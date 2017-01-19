@@ -58,17 +58,47 @@ class DefaultController extends CrudController
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         
-        $em = $this->getDoctrine()->getManager();
+        $search = $request->get('search');
+        $searchValue = is_array($search) && isset($search['value']) ? $search['value'] : '';
         
-        $query = $em
+        $qb = $this
+                ->getDoctrine()
+                ->getManager()
                 ->createQueryBuilder()
                 ->select('e')
                 ->from(Usuario::class, 'e')
                 ->join('e.lotacoes', 'l')
-                ->where('l.unidade = :unidade')
-                ->setParameters([
-                    'unidade' => $unidade
-                ])
+                ->where('l.unidade = :unidade');
+        
+        $params = [
+            'unidade' => $unidade,
+        ];
+        
+        if (!empty($searchValue)) {
+            $where = [
+                '(UPPER(e.login) LIKE UPPER(:login))',
+            ];
+            $params['login'] = "%{$searchValue}%";
+            
+            $tokens = explode(' ', $searchValue);
+            
+            for ($i = 0; $i < count($tokens); $i++) {
+                $value = $tokens[$i];
+                $v1 = "n{$i}";
+                $v2 = "s{$i}";
+                
+                $where[] = "(UPPER(e.nome) LIKE UPPER(:{$v1}))";
+                $where[] = "(UPPER(e.sobrenome) LIKE UPPER(:{$v2}))";
+                
+                $params[$v1] = "{$value}%";
+                $params[$v2] = "%{$value}%";
+            }
+            
+            $qb->andWhere(join(' OR ', $where));
+        }
+                    
+        $query = $qb
+                ->setParameters($params)
                 ->getQuery();
         
         return $this->dataTable($request, $query, false);
