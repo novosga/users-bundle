@@ -1,6 +1,7 @@
 {% extends "NovosgaUsersBundle::base.html.twig" %}
 
 {% block body %}
+<<<<<<< HEAD
     <div class="row">
         <div class="col-sm-8">
             <h1>
@@ -20,6 +21,20 @@
     </div>
     
     <hr>
+=======
+    <a href="{{ path('novosga_users_edit') }}" class="btn btn-primary pull-right">
+        <i class="fa fa-plus"></i>
+        {% trans %}Novo usuário{% endtrans %}
+    </a>
+    
+    <h1>
+        <i class="fa fa-users" aria-hidden="true"></i>
+        {% trans %}Usuários{% endtrans %}
+        <small>
+            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+        </small>
+    </h1>
+>>>>>>> 1c97863ff09620704f0e03c2a241d896d1db61e7
     
     <table id="datatable" class="table table-striped">
         <thead>
@@ -52,7 +67,14 @@
                 processing: true,
                 serverSide: true,
                 searching: true,
+<<<<<<< HEAD
                 ajax: '{{ path('novosga_users_search') }}',
+=======
+                ajax: {
+                    url: '{{ path('novosga_users_search') }}',
+                    type: 'post'
+                },
+>>>>>>> 1c97863ff09620704f0e03c2a241d896d1db61e7
                 pageLength: 10,
                 columns: [
                     {
@@ -60,9 +82,12 @@
                     },
                     {
                         data: 'login',
+                        searchable: true,
                     },
                     {
-                        data: 'nome'
+                        render: function (data, type, user) {
+                            return user.nome + ' ' + user.sobrenome;
+                        }
                     },
                     {
                         data: 'ativo',

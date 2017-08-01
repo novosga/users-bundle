@@ -63,25 +63,49 @@ class DefaultController extends CrudController
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         
-        $em = $this->getDoctrine()->getManager();
+        $search = $request->get('search');
+        $searchValue = is_array($search) && isset($search['value']) ? $search['value'] : '';
         
-        $qb = $em
+        $qb = $this
+                ->getDoctrine()
+                ->getManager()
                 ->createQueryBuilder()
                 ->select('e')
                 ->from(Usuario::class, 'e')
                 ->where('UPPER(e.login) LIKE UPPER(:search) OR UPPER(e.nome) LIKE UPPER(:search)');
         
-        $params = [
-            'search' => "%{$searchValue}%",
-        ];
+        $params = [];
                     
         if (!$usuario->isAdmin()) {
             $qb
                 ->join('e.lotacoes', 'l')
                 ->where('l.unidade = :unidade')
                 ->andWhere('e.admin = FALSE');
-            
+       
             $params['unidade'] = $unidade;
+        }
+        
+        if (!empty($searchValue)) {
+            $where = [
+                '(UPPER(e.login) LIKE UPPER(:login))',
+            ];
+            $params['login'] = "%{$searchValue}%";
+            
+            $tokens = explode(' ', $searchValue);
+            
+            for ($i = 0; $i < count($tokens); $i++) {
+                $value = $tokens[$i];
+                $v1 = "n{$i}";
+                $v2 = "s{$i}";
+                
+                $where[] = "(UPPER(e.nome) LIKE UPPER(:{$v1}))";
+                $where[] = "(UPPER(e.sobrenome) LIKE UPPER(:{$v2}))";
+                
+                $params[$v1] = "{$value}%";
+                $params[$v2] = "%{$value}%";
+            }
+            
+            $qb->andWhere(join(' OR ', $where));
         }
                     
         $query = $qb
@@ -101,6 +125,7 @@ class DefaultController extends CrudController
      * @Route("/new", name="novosga_users_new")
      * @Route("/edit/{id}", name="novosga_users_edit")
      * @Method({"GET", "POST"})
+     * @Route("/edit/{id}", name="novosga_users_edit")
      */
     public function editAction(Request $request, $id = 0)
     {
