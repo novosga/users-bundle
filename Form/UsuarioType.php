@@ -14,22 +14,20 @@ namespace Novosga\UsersBundle\Form;
 use Novosga\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Valid;
-use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Email;
 
 class UsuarioType extends AbstractType
 {
@@ -71,25 +69,19 @@ class UsuarioType extends AbstractType
             ->add('sobrenome', TextType::class, [
                 'label' => 'Sobrenome',
                 'constraints' => [
-                    new NotBlank(),
+                    new NotNull(),
                     new Length([ 'max' => 100 ]),
                 ]
             ])
-            ->add('lotacoes', CollectionType::class, [
-                'entry_type' => LotacaoType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'error_bubbling' => true,
-                'constraints' => [
-                    new Valid(),
-                    new Count([ 'min' => 1 ]),
-                ],
-            ]);
+            ->add('lotacoesRemovidas', HiddenType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+        ;
         
         if ($entity->getId()) {
-            $builder->add('status', CheckboxType::class, [
-                'label' => 'Status',
+            $builder->add('ativo', CheckboxType::class, [
+                'label' => 'Ativo',
                 'required' => false,
                 'constraints' => [
                     new NotNull(),
@@ -100,15 +92,13 @@ class UsuarioType extends AbstractType
                 ->add('senha', PasswordType::class, [
                     'label' => 'Senha',
                     'constraints' => [
-
+                        new NotNull(),
+                        new Length([ 'min' => 6 ]),
                     ]
                 ])
                 ->add('confirmacaoSenha', PasswordType::class, [
                     'label' => 'Confirmação da senha',
                     'mapped' => false,
-                    'constraints' => [
-
-                    ]
                 ]);
             
             $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -117,14 +107,14 @@ class UsuarioType extends AbstractType
                 $confirmacao = $form->get('confirmacaoSenha');
                 
                 if ($entity->getSenha() !== $confirmacao->getData()) {
-                    $confirmacao->addError(new FormError('A confirmação de senha não confere com a senha.'));
+                    $confirmacao->addError(new FormError('A senha e a confirmação da senha não conferem.'));
                 }
             });
         }
     }
     
     /**
-     * 
+     *
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)

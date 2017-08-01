@@ -1,20 +1,32 @@
-{% extends "::base.html.twig" %}
+{% extends "NovosgaUsersBundle::base.html.twig" %}
 
 {% block body %}
-    <h1>
-        <i class="fa fa-users" aria-hidden="true"></i>
-        {% trans %}Usuários{% endtrans %}
-        <small>
-            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
-        </small>
-    </h1>
+    <div class="row">
+        <div class="col-sm-8">
+            <h1>
+                <i class="fa fa-users" aria-hidden="true"></i>
+                {% trans %}Usuários{% endtrans %}
+                <small>
+                    {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+                </small>
+            </h1>
+        </div>
+        <div class="col-sm-4 text-right">
+            <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
+                <i class="fa fa-plus"></i>
+                {% trans %}Novo usuário{% endtrans %}
+            </a>
+        </div>
+    </div>
+    
+    <hr>
     
     <table id="datatable" class="table table-striped">
         <thead>
             <th>#</th>
             <th>{% trans %}Nome de usuário{% endtrans %}</th>
             <th>{% trans %}Nome{% endtrans %}</th>
-            <th>{% trans %}Status{% endtrans %}</th>
+            <th>{% trans %}Situação{% endtrans %}</th>
             <th class="col-md-1"></th>
         </thead>
         <tbody>
@@ -39,7 +51,7 @@
             $('#datatable').dataTable({
                 processing: true,
                 serverSide: true,
-                searching: false,
+                searching: true,
                 ajax: '{{ path('novosga_users_search') }}',
                 pageLength: 10,
                 columns: [
@@ -53,7 +65,10 @@
                         data: 'nome'
                     },
                     {
-                        data: 'status'
+                        data: 'ativo',
+                        render: function (ativo) {
+                            return ativo ? '{% trans %}Ativo{% endtrans %}' : '{% trans %}Inativo{% endtrans %}';
+                        }
                     },
                     {
                         data: 'id',

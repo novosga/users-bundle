@@ -22,6 +22,7 @@ use Mangati\BaseBundle\Event\CrudEvents;
 use Novosga\Http\Envelope;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * UsuariosController.
@@ -39,10 +40,11 @@ class DefaultController extends CrudController
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
+     *
      * @Route("/", name="novosga_users_index")
+     * @Method("GET")
      */
-    public function indexAction(Request $request) 
+    public function indexAction(Request $request)
     {
         return $this->render('NovosgaUsersBundle:default:index.html.twig');
     }
@@ -50,25 +52,40 @@ class DefaultController extends CrudController
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
+     *
      * @Route("/search.json", name="novosga_users_search")
      */
-    public function searchAction(Request $request) 
+    public function searchAction(Request $request)
     {
+        $search = $request->get('search');
+        $searchValue = is_array($search) && isset($search['value']) ? $search['value'] : '';
+        
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         
         $em = $this->getDoctrine()->getManager();
         
-        $query = $em
+        $qb = $em
                 ->createQueryBuilder()
                 ->select('e')
                 ->from(Usuario::class, 'e')
+                ->where('UPPER(e.login) LIKE UPPER(:search) OR UPPER(e.nome) LIKE UPPER(:search)');
+        
+        $params = [
+            'search' => "%{$searchValue}%",
+        ];
+                    
+        if (!$usuario->isAdmin()) {
+            $qb
                 ->join('e.lotacoes', 'l')
                 ->where('l.unidade = :unidade')
-                ->setParameters([
-                    'unidade' => $unidade
-                ])
+                ->andWhere('e.admin = FALSE');
+            
+            $params['unidade'] = $unidade;
+        }
+                    
+        $query = $qb
+                ->setParameters($params)
                 ->getQuery();
         
         return $this->dataTable($request, $query, false);
@@ -76,85 +93,138 @@ class DefaultController extends CrudController
     
     
     /**
-     * 
+     *
      * @param Request $request
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
-     * 
-     * @Route("/edit/{id}")
+     *
+     * @Route("/new", name="novosga_users_new")
+     * @Route("/edit/{id}", name="novosga_users_edit")
+     * @Method({"GET", "POST"})
      */
     public function editAction(Request $request, $id = 0)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em          = $this->getDoctrine()->getManager();
         $currentUser = $this->getUser();
         $unidades    = $em->getRepository(Unidade::class)->findByUsuario($currentUser);
                 
         $this
-            ->addEventListener(CrudEvents::FORM_RENDER, function (CrudEvent $event) use ($em, $unidades) {
+            ->addEventListener(CrudEvents::FORM_RENDER, function (CrudEvent $event) use ($unidades) {
                 $params = $event->getData();
                 $params['unidades'] = $unidades;
             })
-            ->addEventListener(CrudEvents::PRE_EDIT, function (CrudEvent $event) use ($em, $unidades) {
-                $usuario  = $event->getData();
-                $lotacoes = $usuario->getLotacoes()->toArray();
-                
-                $existe = false;
-                
-                foreach ($lotacoes as $lotacao) {
-                    if (in_array($lotacao->getUnidade(), $unidades)) {
-                        $existe = true;
-                        break;
+            ->addEventListener(CrudEvents::PRE_EDIT, function (CrudEvent $event) use ($currentUser, $unidades) {
+                if (!$currentUser->isAdmin()) {
+                    $usuario  = $event->getData();
+                    $lotacoes = $usuario->getLotacoes()->toArray();
+
+                    $existe = false;
+
+                    foreach ($lotacoes as $lotacao) {
+                        if (in_array($lotacao->getUnidade(), $unidades)) {
+                            $existe = true;
+                            break;
+                        }
                     }
-                }
-                
-                if (!$existe) {
-                    throw new Exception('Permissão negada');
+
+                    if (!$existe) {
+                        throw new Exception('Permissão negada');
+                    }
                 }
             })
             ->addEventListener(CrudEvents::PRE_SAVE, function (CrudEvent $event) use ($em, $unidades) {
+                $form    = $event->getForm();
+                $request = $event->getRequest();
+                /* @var $usuario Usuario */
                 $usuario = $event->getData();
                 
-                if ($usuario->getId()) {
-                    $lotacoesRemovidas = $usuario->getLotacoes()->getDeleteDiff();
-                    $lotacoesInseridas = $usuario->getLotacoes()->getInsertDiff();
+                /* @var $unidadesRemovidas \Novosga\Entity\Lotacao[] */
+                $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData());
+                $lotacoesRemovidas = [];
 
+                if (count($unidadesRemovidas)) {
+                    foreach ($unidadesRemovidas as $unidadeId) {
+                        foreach ($usuario->getLotacoes() as $lotacao) {
+                            if ($lotacao->getUnidade()->getId() == $unidadeId) {
+                                if (!in_array($lotacao->getUnidade(), $unidades)) {
+                                    throw new Exception(sprintf('Você não tem permissão para remover a lotação da unidade %s', $lotacao->getUnidade()));
+                                }
+                                $lotacoesRemovidas[] = $lotacao;
+                                $usuario->getLotacoes()->removeElement($lotacao);
+                            }
+                        }
+                    }
+                }
+                
+                $novasUnidades = $request->get('novasUnidades');
+                $novosPerfis   = $request->get('novosPerfis');
+                
+                if (count($novasUnidades) && count($novosPerfis)) {
+                    for ($i = 0; $i < count($novasUnidades); $i++) {
+                        $unidade = $em->find(Unidade::class, $novasUnidades[$i]);
+                        $perfil  = $em->find(Perfil::class, $novosPerfis[$i]);
+                        
+                        if ($unidade && $perfil) {
+                            if (!in_array($unidade, $unidades)) {
+                                throw new Exception(sprintf('Você não tem permissão para adicionar uma lotação da unidade %s', $lotacao->getUnidade()));
+                            }
+                            
+                            $lotacao = new \Novosga\Entity\Lotacao();
+                            $lotacao->setPerfil($perfil);
+                            $lotacao->setUnidade($unidade);
+                            $lotacao->setUsuario($usuario);
+                            $usuario->getLotacoes()->add($lotacao);
+                        }
+                    }
+                }
+                
+                if (!count($usuario->getLotacoes())) {
                     foreach ($lotacoesRemovidas as $lotacao) {
-                        if (!in_array($lotacao->getUnidade(), $unidades)) {
-                            throw new \Exception('Tentando remover lotação de unidade sem permissão');
-                        }
+                        $usuario->getLotacoes()->add($lotacao);
                     }
+                    throw new Exception(sprintf('Você precisar informar ao menos uma lotação.'));
+                }
+                
+                if (!$usuario->getId()) {
+                    $usuario->setAlgorithm('bcrypt');
+                    $usuario->setSalt(null);
                     
-                    foreach ($lotacoesInseridas as $lotacao) {
-                        if (!in_array($lotacao->getUnidade(), $unidades)) {
-                            throw new \Exception('Tentando inserir lotação de unidade sem permissão');
-                        }
-                    }
-
-                    foreach ($usuario->getLotacoes() as $lotacao) {
-                        if (!in_array($lotacao, $lotacoesRemovidas) && !in_array($lotacao, $lotacoesInseridas)) {
-                            $em->refresh($lotacao);
-                        }
-                    }
+                    $encoded = $this->encodePassword($usuario, $usuario->getSenha(), $form->get('confirmacaoSenha')->getData());
                     
+                    $usuario->setSenha($encoded);
+                    $usuario->setAtivo(true);
+                    $usuario->setAdmin(false);
+                } else {
                     $lotacoes = $usuario->getLotacoes()->toArray();
                     $lotacao = end($lotacoes);
                     $em->getRepository(Usuario::class)->updateUnidade($usuario, $lotacao->getUnidade());
-                } else {
-                    foreach ($usuario->getLotacoes() as $lotacao) {
-                        if (!in_array($lotacao->getUnidade(), $unidades)) {
-                            throw new \Exception('Tentando inserir lotação de unidade sem permissão');
-                        }
-                    }
-                    
-                    $usuario->setStatus(true);
-                    $usuario->setAlgorithm('md5');
-                    $usuario->setAdmin(false);
-                    $usuario->setSalt(uniqid());
                 }
             })
             ;
         
         return $this->edit('NovosgaUsersBundle:default:edit.html.twig', $request, $id);
+    }
+
+    /**
+     * @Route("/novalotacao")
+     */
+    public function novaLotacaoAction(Request $request)
+    {
+        $usuario = $this->getUser();
+        $lotacao = new \Novosga\Entity\Lotacao();
+        
+        $ignore = array_filter(explode(',', $request->get('ignore')), function ($id) {
+            return $id > 0;
+        });
+        
+        $form = $this->createForm(\Novosga\UsersBundle\Form\LotacaoType::class, $lotacao, [
+            'usuario' => $usuario,
+            'ignore' => $ignore,
+        ]);
+        
+        return $this->render('NovosgaUsersBundle:default:novaLotacao.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -188,28 +258,23 @@ class DefaultController extends CrudController
     }
 
     /**
-     * Altera a senha do usuario que está sendo editado.
-     *
-     * @param Novosga\Context $context
+     * @Route("/password/{id}")
      */
-    public function alterar_senha(Context $context)
+    public function passwordAction(Request $request, Usuario $user)
     {
         $envelope = new Envelope();
-        $id = (int) $request->get('id');
-        $senha = $request->get('senha');
-        $confirmacao = $request->get('confirmacao');
-        $usuario = $this->findById($id);
         
         try {
-            if (!$usuario) {
-                throw new Exception(_('Usuário inválido'));
-            }
+            $data         = json_decode($request->getContent());
+            $password     = $data->senha;
+            $confirmation = $data->confirmacao;
             
-            $hash = $this->app()->getAcessoService()->verificaSenha($senha, $confirmacao);
-            $query = $this->em()->createQuery("UPDATE Novosga\Entity\Usuario u SET u.senha = :senha WHERE u.id = :id");
-            $query->setParameter('senha', $hash);
-            $query->setParameter('id', $usuario->getId());
-            $query->execute();
+            $encoded = $this->encodePassword($user, $password, $confirmation);
+            $user->setSenha($encoded);
+            
+            $em = $this->getDoctrine()->getManager();
+            $em->merge($user);
+            $em->flush();
         } catch (Exception $e) {
             $envelope->exception($e);
             
@@ -229,5 +294,20 @@ class DefaultController extends CrudController
     {
         return UsuarioType::class;
     }
+    
+    protected function encodePassword(Usuario $user, $password, $confirmation)
+    {
+        if (strlen($password) < 6) {
+            throw new Exception(sprintf('A senha precisa ter no mínimo %s caraceteres.', 6));
+        }
 
+        if ($password !== $confirmation) {
+            throw new Exception('A senha e a confirmação da senha não conferem.');
+        }
+        
+        $encoder = $this->container->get('security.password_encoder');
+        $encoded = $encoder->encodePassword($user, $password);
+        
+        return $encoded;
+    }
 }
