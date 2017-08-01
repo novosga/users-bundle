@@ -63,16 +63,12 @@ class DefaultController extends CrudController
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         
-        $search = $request->get('search');
-        $searchValue = is_array($search) && isset($search['value']) ? $search['value'] : '';
-        
         $qb = $this
                 ->getDoctrine()
                 ->getManager()
                 ->createQueryBuilder()
                 ->select('e')
-                ->from(Usuario::class, 'e')
-                ->where('UPPER(e.login) LIKE UPPER(:search) OR UPPER(e.nome) LIKE UPPER(:search)');
+                ->from(Usuario::class, 'e');
         
         $params = [];
                     
