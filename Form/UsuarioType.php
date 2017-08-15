@@ -48,7 +48,7 @@ class UsuarioType extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank(),
-                    new Length([ 'min' => 5, 'max' => 20 ]),
+                    new Length([ 'min' => 3, 'max' => 20 ]),
                     new Regex("/^[a-zA-Z0-9\.]+$/"),
                 ]
             ])
