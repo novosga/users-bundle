@@ -1,97 +1,51 @@
 {% extends "NovosgaUsersBundle::base.html.twig" %}
 
 {% block body %}
-
-    <div class="row">
-        <div class="col-sm-8">
-            <h1>
-                <i class="fa fa-users" aria-hidden="true"></i>
-                {% trans %}Usuários{% endtrans %}
-                <small>
-                    {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
-                </small>
-            </h1>
-        </div>
-        <div class="col-sm-4 text-right">
-            <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
-                <i class="fa fa-plus"></i>
-                {% trans %}Novo usuário{% endtrans %}
-            </a>
-        </div>
+    <h1>
+        <i class="fa fa-users" aria-hidden="true"></i>
+        {% trans %}Usuários{% endtrans %}
+        <small>
+            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+        </small>
+    </h1>
+        
+    <div class="text-right">
+        <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            {% trans %}Novo usuário{% endtrans %}
+        </a>
     </div>
-    
+        
     <hr>
     
-    <table id="datatable" class="table table-striped">
+    <table class="table table-bordered">
         <thead>
             <th>#</th>
             <th>{% trans %}Nome de usuário{% endtrans %}</th>
             <th>{% trans %}Nome{% endtrans %}</th>
             <th>{% trans %}Situação{% endtrans %}</th>
-            <th class="col-md-1"></th>
+            <th></th>
         </thead>
         <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.login }}</td>
+                    <td>{{ usuario.nome }} {{ usuario.sobrenome }}</td>
+                    <td>
+                        {% if usuario.ativo %}
+                            {% trans %}Ativo{% endtrans %}
+                        {% else %}
+                            {% trans %}Inativo{% endtrans %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('novosga_users_edit', { id: usuario.id }) }}" class="btn btn-secondary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" type="text/css" href="{{ asset("bundles/novosgausers/css/jquery.dataTables.min.css") }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset("bundles/novosgausers/css/dataTables.bootstrap.min.css") }}" />
-{% endblock %}
-    
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript" src="{{ asset("bundles/novosgausers/js/jquery.dataTables.min.js") }}"></script>
-    <script type="text/javascript" src="{{ asset("bundles/novosgausers/js/dataTables.bootstrap.min.js") }}"></script>
-    <script>
-        (function() {
-            'use strict'
-            
-            $('#datatable').dataTable({
-                processing: true,
-                serverSide: true,
-                searching: true,
-                ajax: {
-                    url: '{{ path('novosga_users_search') }}',
-                    type: 'post'
-                },
-                pageLength: 10,
-                columns: [
-                    {
-                        data: 'id'
-                    },
-                    {
-                        data: 'login',
-                        searchable: true,
-                    },
-                    {
-                        render: function (data, type, user) {
-                            return user.nome + ' ' + user.sobrenome;
-                        }
-                    },
-                    {
-                        data: 'ativo',
-                        render: function (ativo) {
-                            return ativo ? '{% trans %}Ativo{% endtrans %}' : '{% trans %}Inativo{% endtrans %}';
-                        }
-                    },
-                    {
-                        data: 'id',
-                        render: function (id) {
-                            return '<a href="{{ path('novosga_users_index') }}edit/' + id + '" class="btn btn-default"><i class="fa fa-edit"></i></a>';
-                        }
-                    }
-                ]
-            }).on('preXhr.dt', function (e, settings, data) {
-                $('#search-form :input').each(function (i, e) {
-                    var input = $(e);
-                    data.search[input.prop('name')] = input.val();
-                });
-            }).on('draw.dt', function () {
-                
-            });
-        })();
-    </script>
 {% endblock %}

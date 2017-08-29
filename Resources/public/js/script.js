@@ -103,6 +103,6 @@
             });
         }
         
-        $('#dialog-lotacao').hide();
+        $('#dialog-lotacao').modal('hide');
     });
 })();

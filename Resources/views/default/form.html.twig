@@ -11,14 +11,14 @@
         
     {{ form_start(form) }}
 
-        {% include 'MangatiBaseBundle:Crud:flashMessages.html.twig' %}
+        {% include 'flashMessages.html.twig' %}
 
         <div class="row">
             <div class="col-md-5">
                 <fieldset>
                     <legend>{% trans %}Geral{% endtrans %}</legend>
 
-                    <p class="info">{% trans %}Dados básico do usuário.{% endtrans %}</p>
+                    <p class="text-secondary">{% trans %}Dados básico do usuário.{% endtrans %}</p>
 
                     {{ form_row(form.login) }}
 
@@ -35,11 +35,11 @@
 
                     {% if entity.id %}
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-6">
                                 {{ form_row(form.ativo) }}
                             </div>
-                            <div class="col-xs-6 text-right">
-                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dialog-senha">
+                            <div class="col-6 text-right">
+                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-senha">
                                     <i class="fa fa-lock"></i>
                                     {% trans %}Alterar senha{% endtrans %}
                                 </button>
@@ -58,7 +58,7 @@
                 <fieldset>
                     <legend>{% trans %}Lotações{% endtrans %}</legend>
 
-                    <p class="info">{% trans %}Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.{% endtrans %}</p>
+                    <p class="text-secondary">{% trans %}Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.{% endtrans %}</p>
                     
                     <table class="table">
                         <thead>
@@ -83,7 +83,7 @@
                                     <input type="hidden" name="novosPerfis[]" v-bind:value="lotacao.perfil.id" v-if="lotacao.novo">
                                 </td>
                                 <td class="text-right text-nowrap">
-                                    <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-default" v-on:click="viewPerfil(lotacao.perfil.id)">
+                                    <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-secondary" v-on:click="viewPerfil(lotacao.perfil.id)">
                                         <i class="fa fa-eye"></i>
                                     </button>
 
@@ -98,8 +98,8 @@
                                 <td colspan="2">
                                 </td>
                                 <td class="text-right">
-                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#dialog-lotacao">
-                                        <span class="glyphicon glyphicon-plus"></span>&nbsp;
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-lotacao">
+                                        <i class="fa fa-plus"></i>&nbsp;
                                         {% trans %}Adicionar{% endtrans %}
                                     </button>
                                 </td>
@@ -115,11 +115,11 @@
 
         <div class="buttons">
             <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-save"></span> 
+                <i class="fa fa-check"></i> 
                 {% trans %}Salvar{% endtrans %}
             </button>
-            <a href="{{ path('novosga_users_index') }}" class="btn btn-default">
-                <span class="glyphicon glyphicon-chevron-left"></span> 
+            <a href="{{ path('novosga_users_index') }}" class="btn btn-secondary">
+                <i class="fa fa-chevron-left"></i>
                 {% trans %}Voltar{% endtrans %}
             </a>
         </div>
@@ -133,14 +133,14 @@
             <div class="modal-content">
                 <form id="lotacao-form">
                     <div class="modal-header">
+                        <h5 class="modal-title">{% trans %}Lotação{% endtrans %}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">{% trans %}Lotação{% endtrans %}</h4>
                     </div>
                     <div class="modal-body">
                         <!-- dynamic content loaded by ajax -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
                             {% trans %}Fechar{% endtrans %}
                         </button>
                         <button type="submit" class="btn btn-primary">
@@ -157,8 +157,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h5 class="modal-title">{% trans %}Perfil{% endtrans %}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans %}Perfil{% endtrans %}</h4>
                 </div>
                 <div class="modal-body" v-if="perfil">
                     <table class="table table-bordered">
@@ -209,8 +209,8 @@
                 <div class="modal-content">
                     <form>
                         <div class="modal-header">
+                            <h5 class="modal-title">{% trans %}Alterar senha{% endtrans %}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">{% trans %}Alterar senha{% endtrans %}</h4>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
@@ -253,6 +253,5 @@
                 {%- endfor -%} 
             ];
     </script>
-    <script src="{{ asset('bundles/mangatibase/js/symfony-collection.js') }}"></script>
     <script src="{{ asset('bundles/novosgausers/js/script.js') }}"></script>
 {% endblock %}
