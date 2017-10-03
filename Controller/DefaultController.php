@@ -93,7 +93,7 @@ class DefaultController extends Controller
                 ->getQuery()
                 ->getResult();
         
-        return $this->render('NovosgaUsersBundle:default:index.html.twig', [
+        return $this->render('@NovosgaUsers/default/index.html.twig', [
             'usuarios' => $usuarios
         ]);
     }
@@ -213,7 +213,7 @@ class DefaultController extends Controller
             return $this->redirectToRoute('novosga_users_edit', [ 'id' => $entity->getId() ]);
         }
         
-        return $this->render('NovosgaUsersBundle:default:form.html.twig', [
+        return $this->render('@NovosgaUsers/default/form.html.twig', [
             'entity'   => $entity,
             'form'     => $form->createView(),
             'unidades' => $unidades,
@@ -237,7 +237,7 @@ class DefaultController extends Controller
             'ignore' => $ignore,
         ]);
         
-        return $this->render('NovosgaUsersBundle:default:novaLotacao.html.twig', [
+        return $this->render('@NovosgaUsers/default/novaLotacao.html.twig', [
             'form' => $form->createView(),
         ]);
     }
