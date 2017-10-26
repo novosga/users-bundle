@@ -1,19 +1,22 @@
 {% extends "@NovosgaUsers/base.html.twig" %}
 
 {% block body %}
-    <h1>
-        <i class="fa fa-users" aria-hidden="true"></i>
-        {% trans %}Usuários{% endtrans %}
-        <small>
-            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
-        </small>
-    </h1>
-        
-    <div class="text-right">
-        <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
-            <i class="fa fa-plus"></i>
-            {% trans %}Novo usuário{% endtrans %}
-        </a>
+    <div class="row">
+        <div class="col-8">
+            <h1>
+                <i class="fa fa-users" aria-hidden="true"></i>
+                {% trans %}Usuários{% endtrans %}
+                <small>
+                    {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+                </small>
+            </h1>
+        </div>
+        <div class="col-4 text-right">
+            <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
+                <i class="fa fa-plus"></i>
+                {% trans %}Novo usuário{% endtrans %}
+            </a>
+        </div>
     </div>
         
     <hr>
@@ -39,7 +42,7 @@
                             {% trans %}Inativo{% endtrans %}
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="text-right">
                         <a href="{{ path('novosga_users_edit', { id: usuario.id }) }}" class="btn btn-secondary">
                             <i class="fa fa-edit"></i>
                         </a>

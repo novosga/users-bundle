@@ -9,6 +9,8 @@
         </small>
     </h1>
         
+    <hr>
+        
     {{ form_start(form) }}
 
         {% include 'flashMessages.html.twig' %}
@@ -54,7 +56,7 @@
                     {% endif %}
                 </fieldset>
             </div>
-            <div class="col-md-7" id="lotacoes">
+            <div class="col-6 ml-auto" id="lotacoes">
                 <fieldset>
                     <legend>{% trans %}Lotações{% endtrans %}</legend>
 
@@ -112,6 +114,8 @@
                 </fieldset>
             </div>
         </div>
+        
+        <hr>
 
         <div class="buttons">
             <button type="submit" class="btn btn-primary">
