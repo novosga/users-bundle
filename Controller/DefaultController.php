@@ -280,21 +280,16 @@ class DefaultController extends Controller
     {
         $envelope = new Envelope();
         
-        try {
-            $data         = json_decode($request->getContent());
-            $password     = $data->senha;
-            $confirmation = $data->confirmacao;
-            
-            $encoded = $this->encodePassword($user, $password, $confirmation);
-            $user->setSenha($encoded);
-            
-            $em = $this->getDoctrine()->getManager();
-            $em->merge($user);
-            $em->flush();
-        } catch (Exception $e) {
-            $envelope->exception($e);
-            
-        }
+        $data         = json_decode($request->getContent());
+        $password     = $data->senha;
+        $confirmation = $data->confirmacao;
+
+        $encoded = $this->encodePassword($user, $password, $confirmation);
+        $user->setSenha($encoded);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->merge($user);
+        $em->flush();
 
         return $this->json($envelope);
     }
