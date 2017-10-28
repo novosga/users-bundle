@@ -63,14 +63,14 @@
                     <p class="text-secondary">{% trans %}Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.{% endtrans %}</p>
                     
                     <table class="table">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th>{% trans %}Unidade{% endtrans %}</th>
                                 <th>{% trans %}Perfil{% endtrans %}</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-cloak>
                             <tr v-for="lotacao in lotacoes">
                                 <td>
                                     {% verbatim %}
