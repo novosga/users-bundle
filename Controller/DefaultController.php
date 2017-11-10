@@ -150,7 +150,12 @@ class DefaultController extends Controller
                     foreach ($entity->getLotacoes() as $lotacao) {
                         if ($lotacao->getUnidade()->getId() == $unidadeId) {
                             if (!in_array($lotacao->getUnidade(), $unidades)) {
-                                throw new Exception(sprintf('Você não tem permissão para remover a lotação da unidade %s', $lotacao->getUnidade()));
+                                throw new Exception(
+                                    sprintf(
+                                        'Você não tem permissão para remover a lotação da unidade %s',
+                                        $lotacao->getUnidade()
+                                    )
+                                );
                             }
                             $lotacoesRemovidas[] = $lotacao;
                             $entity->getLotacoes()->removeElement($lotacao);
@@ -169,7 +174,12 @@ class DefaultController extends Controller
 
                     if ($unidade && $perfil) {
                         if (!in_array($unidade, $unidades)) {
-                            throw new Exception(sprintf('Você não tem permissão para adicionar uma lotação da unidade %s', $lotacao->getUnidade()));
+                            throw new Exception(
+                                sprintf(
+                                    'Você não tem permissão para adicionar uma lotação da unidade %s',
+                                    $lotacao->getUnidade()
+                                )
+                            );
                         }
 
                         $lotacao = new Lotacao();
@@ -192,7 +202,11 @@ class DefaultController extends Controller
                 $entity->setAlgorithm('bcrypt');
                 $entity->setSalt(null);
 
-                $encoded = $this->encodePassword($entity, $entity->getSenha(), $form->get('confirmacaoSenha')->getData());
+                $encoded = $this->encodePassword(
+                    $entity,
+                    $entity->getSenha(),
+                    $form->get('confirmacaoSenha')->getData()
+                );
 
                 $entity->setSenha($encoded);
                 $entity->setAtivo(true);
