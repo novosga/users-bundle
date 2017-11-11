@@ -41,8 +41,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $search = $request->get('search');
-        $searchValue = is_array($search) && isset($search['value']) ? $search['value'] : '';
+        $search = $request->get('q');
         
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
@@ -65,13 +64,13 @@ class DefaultController extends Controller
             $params['unidade'] = $unidade;
         }
         
-        if (!empty($searchValue)) {
+        if (!empty($search)) {
             $where = [
                 '(UPPER(e.login) LIKE UPPER(:login))',
             ];
-            $params['login'] = "%{$searchValue}%";
+            $params['login'] = "%{$search}%";
             
-            $tokens = explode(' ', $searchValue);
+            $tokens = explode(' ', $search);
             
             for ($i = 0; $i < count($tokens); $i++) {
                 $value = $tokens[$i];
@@ -87,14 +86,38 @@ class DefaultController extends Controller
             
             $qb->andWhere(join(' OR ', $where));
         }
-                    
-        $usuarios = $qb
+        
+        $query = $qb
                 ->setParameters($params)
-                ->getQuery()
-                ->getResult();
+                ->getQuery();
+        
+        $currentPage = max(1, (int) $request->get('p'));
+        
+        $adapter    = new \Pagerfanta\Adapter\DoctrineORMAdapter($query);
+        $pagerfanta = new \Pagerfanta\Pagerfanta($adapter);
+        $view       = new \Pagerfanta\View\TwitterBootstrap4View();
+        
+        $pagerfanta->setCurrentPage($currentPage);
+        
+        $path = $this->generateUrl('novosga_users_index');
+        $html = $view->render(
+            $pagerfanta, 
+            function($page) use ($request, $path) {
+                $q = $request->get('q');
+                return "{$path}?q={$q}&p={$page}";
+            }, 
+            [
+                'proximity' => 3,
+                'prev_message' => '←',
+                'next_message' => '→',
+            ]
+        );
+        
+        $usuarios = $pagerfanta->getCurrentPageResults();
         
         return $this->render('@NovosgaUsers/default/index.html.twig', [
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
+            'paginacao' => $html,
         ]);
     }
     

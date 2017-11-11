@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-8">
+        <div class="col-md-6  col-lg-8">
             <h1>
                 <i class="fa fa-users" aria-hidden="true"></i>
                 {% trans %}Usuários{% endtrans %}
@@ -11,11 +11,21 @@
                 </small>
             </h1>
         </div>
-        <div class="col-4 text-right">
-            <a href="{{ path('novosga_users_new') }}" class="btn btn-primary">
-                <i class="fa fa-plus"></i>
-                {% trans %}Novo usuário{% endtrans %}
-            </a>
+        <div class="col-md-6 col-lg-4 text-right">
+            <form class="form-inline">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="q" placeholder="{% trans %}Buscar{% endtrans %}" value="{{ app.request.get('q') }}">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+                <a href="{{ path('novosga_users_new') }}" class="btn btn-primary ml-auto">
+                    <i class="fa fa-plus"></i>
+                    {% trans %}Novo usuário{% endtrans %}
+                </a>
+            </form>
         </div>
     </div>
         
@@ -51,4 +61,6 @@
             {% endfor %}
         </tbody>
     </table>
+            
+    {{ paginacao|raw }}
 {% endblock %}
