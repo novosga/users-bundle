@@ -101,11 +101,11 @@ class DefaultController extends Controller
         
         $path = $this->generateUrl('novosga_users_index');
         $html = $view->render(
-            $pagerfanta, 
-            function($page) use ($request, $path) {
+            $pagerfanta,
+            function ($page) use ($request, $path) {
                 $q = $request->get('q');
                 return "{$path}?q={$q}&p={$page}";
-            }, 
+            },
             [
                 'proximity' => 3,
                 'prev_message' => '←',
