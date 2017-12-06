@@ -1,8 +1,10 @@
 {% extends "base.html.twig" %}
 
+{% trans_default_domain 'NovosgaUsersBundle' %}
+
 {% block title -%}
-    {% trans %}Usuários{% endtrans %}
-{%- endblock %}
+    {{ 'title'|trans }}
+{%- endblock %} 
 
 {% block stylesheets %}
     {{ parent() }}

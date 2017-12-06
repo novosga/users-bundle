@@ -1,13 +1,15 @@
 {% extends "@NovosgaUsers/base.html.twig" %}
 
+{% trans_default_domain 'NovosgaUsersBundle' %}
+
 {% block body %}
     <div class="row">
         <div class="col-md-6  col-lg-8">
             <h1>
                 <i class="fa fa-users" aria-hidden="true"></i>
-                {% trans %}Usuários{% endtrans %}
+                {{ 'title'|trans }}
                 <small>
-                    {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+                    {{ 'subtitle'|trans }}
                 </small>
             </h1>
         </div>
