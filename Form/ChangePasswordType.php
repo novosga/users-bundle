@@ -1,0 +1,67 @@
+<?php
+
+/*
+ * This file is part of the Novo SGA project.
+ *
+ * (c) Rogerio Lino <rogeriolino@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Novosga\UsersBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
+class ChangePasswordType extends AbstractType
+{
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('senha', PasswordType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new NotNull(),
+                    new Length([ 'min' => 6 ]),
+                ],
+                'label' => 'form.user.password',
+                'translation_domain' => 'NovosgaUsersBundle',
+            ])
+            ->add('confirmacaoSenha', PasswordType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new Length([ 'min' => 6 ]),
+                    new Callback(function ($object, ExecutionContextInterface $context, $payload) {
+                        $form        = $context->getRoot();
+                        $senha       = $form->get('senha');
+                        $confirmacao = $form->get('confirmacaoSenha');
+
+                        if ($senha->getData() !== $confirmacao->getData()) {
+                            $context
+                                ->buildViolation('error.password_confirm')
+                                ->setTranslationDomain('NovosgaUsersBundle')
+                                ->atPath('confirmacaoSenha')
+                                ->addViolation();
+                        }
+                    }),
+                ],
+                'label' => 'form.user.password_confirm',
+                'translation_domain' => 'NovosgaUsersBundle',
+            ]);
+    }
+    
+    public function getBlockPrefix()
+    {
+        return null;
+    }
+}

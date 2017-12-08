@@ -15,6 +15,185 @@
         <source>subtitle</source>
         
       </trans-unit>
+      <trans-unit id="3">
+        <source>form.lotacao.unidade</source>
+        <target>Unity</target>
+        
+      </trans-unit>
+      <trans-unit id="4">
+        <source>form.lotacao.perfil</source>
+        <target>Profile</target>
+        
+      </trans-unit>
+      <trans-unit id="5">
+        <source>form.user.username</source>
+        <target>Username</target>
+        
+      </trans-unit>
+      <trans-unit id="6">
+        <source>form.user.name</source>
+        <target>Name</target>
+        
+      </trans-unit>
+      <trans-unit id="7">
+        <source>form.user.lastname</source>
+        <target>Lastname</target>
+        
+      </trans-unit>
+      <trans-unit id="8">
+        <source>form.user.email</source>
+        <target>Email</target>
+        
+      </trans-unit>
+      <trans-unit id="9">
+        <source>form.user.active</source>
+        <target>Active</target>
+        
+      </trans-unit>
+      <trans-unit id="10">
+        <source>form.user.password</source>
+        <target>Ticket</target>
+        
+      </trans-unit>
+      <trans-unit id="11">
+        <source>form.user.password_confirm</source>
+        
+      </trans-unit>
+      <trans-unit id="12">
+        <source>error.password_confirm</source>
+        
+      </trans-unit>
+      <trans-unit id="13">
+        <source>section.general.title</source>
+        <target>General</target>
+        
+      </trans-unit>
+      <trans-unit id="14">
+        <source>section.general.subtitle</source>
+        
+      </trans-unit>
+      <trans-unit id="15">
+        <source>section.lotation.title</source>
+        <target>Lotations</target>
+        
+      </trans-unit>
+      <trans-unit id="16">
+        <source>section.lotation.subtitle</source>
+        
+      </trans-unit>
+      <trans-unit id="17">
+        <source>label.unity</source>
+        <target>Unity</target>
+        
+      </trans-unit>
+      <trans-unit id="18">
+        <source>label.role</source>
+        <target>Profile</target>
+        
+      </trans-unit>
+      <trans-unit id="19">
+        <source>button.add</source>
+        <target>Add</target>
+        
+      </trans-unit>
+      <trans-unit id="20">
+        <source>button.save</source>
+        <target>Save</target>
+        
+      </trans-unit>
+      <trans-unit id="21">
+        <source>button.back</source>
+        <target>Back</target>
+        
+      </trans-unit>
+      <trans-unit id="22">
+        <source>button.close</source>
+        <target>Close</target>
+        
+      </trans-unit>
+      <trans-unit id="23">
+        <source>button.change</source>
+        <target>Edit</target>
+        
+      </trans-unit>
+      <trans-unit id="24">
+        <source>button.new_user</source>
+        
+      </trans-unit>
+      <trans-unit id="25">
+        <source>button.change_password</source>
+        <target>Change password</target>
+        
+      </trans-unit>
+      <trans-unit id="26">
+        <source>button.view_permissions</source>
+        <target>Show permissions</target>
+        
+      </trans-unit>
+      <trans-unit id="27">
+        <source>button.remove</source>
+        <target>Remove</target>
+        
+      </trans-unit>
+      <trans-unit id="28">
+        <source>label.lotation</source>
+        <target>Lotation</target>
+        
+      </trans-unit>
+      <trans-unit id="29">
+        <source>label.name</source>
+        <target>Name</target>
+        
+      </trans-unit>
+      <trans-unit id="30">
+        <source>label.description</source>
+        <target>Description</target>
+        
+      </trans-unit>
+      <trans-unit id="31">
+        <source>label.permissions</source>
+        <target>Permissions</target>
+        
+      </trans-unit>
+      <trans-unit id="32">
+        <source>label.status</source>
+        <target>Status</target>
+        
+      </trans-unit>
+      <trans-unit id="33">
+        <source>label.enabled</source>
+        <target>Active</target>
+        
+      </trans-unit>
+      <trans-unit id="34">
+        <source>label.disabled</source>
+        <target>Inactive</target>
+        
+      </trans-unit>
+      <trans-unit id="35">
+        <source>label.search</source>
+        <target>Search</target>
+        
+      </trans-unit>
+      <trans-unit id="36">
+        <source>label.username</source>
+        <target>Username</target>
+        
+      </trans-unit>
+      <trans-unit id="37">
+        <source>label.change_password</source>
+        <target>Change password</target>
+        
+      </trans-unit>
+      <trans-unit id="38">
+        <source>label.new_password</source>
+        
+      </trans-unit>
+      <trans-unit id="39">
+        <source>label.password_confirm</source>
+        <target>Password confirm</target>
+        
+      </trans-unit>
     </body>
   </file>
 </xliff>

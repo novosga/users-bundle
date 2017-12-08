@@ -1,4 +1,6 @@
+{% trans_default_domain 'NovosgaUsersBundle' %}
 
-{{ form_row(form.unidade) }}
-
-{{ form_row(form.perfil) }}
+{{ form_start(form) }}
+    {{ form_row(form.unidade) }}
+    {{ form_row(form.perfil) }}
+{{ form_end(form) }}

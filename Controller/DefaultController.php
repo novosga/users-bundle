@@ -15,6 +15,7 @@ use Exception;
 use Novosga\Entity\Lotacao;
 use Novosga\Entity\Perfil;
 use Novosga\Entity\Unidade;
+use Novosga\Entity\Usuario;
 use Novosga\Entity\Usuario as Entity;
 use Novosga\Http\Envelope;
 use Novosga\UsersBundle\Form\LotacaoType;
@@ -24,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * UsuariosController.
@@ -32,6 +34,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DefaultController extends Controller
 {
+    const DOMAIN = 'NovosgaUsersBundle';
+    
     /**
      * @param Request $request
      * @return Response
@@ -131,7 +135,7 @@ class DefaultController extends Controller
      * @Route("/{id}/edit", name="novosga_users_edit")
      * @Method({"GET", "POST"})
      */
-    public function formAction(Request $request, Entity $entity = null)
+    public function formAction(Request $request, TranslatorInterface $translator, Entity $entity = null)
     {
         if (!$entity) {
             $entity = new Entity();
@@ -141,9 +145,7 @@ class DefaultController extends Controller
         $currentUser = $this->getUser();
         $unidades    = $em->getRepository(Unidade::class)->findByUsuario($currentUser);
         
-        $form = $this->createForm(EntityType::class, $entity, [
-            'usuario' => $currentUser,
-        ]);
+        $form = $this->createForm(EntityType::class, $entity);
         $form->handleRequest($request);
         
         if (!$currentUser->isAdmin()) {
@@ -159,101 +161,110 @@ class DefaultController extends Controller
             }
 
             if (!$existe) {
-                throw new Exception('Permissão negada');
+                $error = $translator->trans('error.permission_denied', [], self::DOMAIN);
+                throw new Exception($error);
             }
         }
         
         if ($form->isSubmitted() && $form->isValid()) {
-            /* @var $unidadesRemovidas Lotacao[] */
-            $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData());
-            $lotacoesRemovidas = [];
+            try {
+                /* @var $unidadesRemovidas Lotacao[] */
+                $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData());
+                $lotacoesRemovidas = [];
 
-            if (count($unidadesRemovidas)) {
-                foreach ($unidadesRemovidas as $unidadeId) {
-                    foreach ($entity->getLotacoes() as $lotacao) {
-                        if ($lotacao->getUnidade()->getId() == $unidadeId) {
-                            if (!in_array($lotacao->getUnidade(), $unidades)) {
-                                throw new Exception(
-                                    sprintf(
-                                        'Você não tem permissão para remover a lotação da unidade %s',
-                                        $lotacao->getUnidade()
-                                    )
-                                );
+                if (count($unidadesRemovidas)) {
+                    foreach ($unidadesRemovidas as $unidadeId) {
+                        foreach ($entity->getLotacoes() as $lotacao) {
+                            if ($lotacao->getUnidade()->getId() == $unidadeId) {
+                                if (!in_array($lotacao->getUnidade(), $unidades)) {
+                                    $error = $translator->trans('error.remove_lotation_permission_denied', [
+                                        'unidade' => $lotacao->getUnidade(),
+                                    ], self::DOMAIN);
+                                    
+                                    throw new Exception($error);
+                                }
+                                $lotacoesRemovidas[] = $lotacao;
+                                $entity->getLotacoes()->removeElement($lotacao);
                             }
-                            $lotacoesRemovidas[] = $lotacao;
-                            $entity->getLotacoes()->removeElement($lotacao);
                         }
                     }
                 }
-            }
 
-            $novasUnidades = $request->get('novasUnidades');
-            $novosPerfis   = $request->get('novosPerfis');
+                $novasUnidades = $request->get('novasUnidades');
+                $novosPerfis   = $request->get('novosPerfis');
 
-            if (count($novasUnidades) && count($novosPerfis)) {
-                for ($i = 0; $i < count($novasUnidades); $i++) {
-                    $unidade = $em->find(Unidade::class, $novasUnidades[$i]);
-                    $perfil  = $em->find(Perfil::class, $novosPerfis[$i]);
+                if (count($novasUnidades) && count($novosPerfis)) {
+                    for ($i = 0; $i < count($novasUnidades); $i++) {
+                        $unidade = $em->find(Unidade::class, $novasUnidades[$i]);
+                        $perfil  = $em->find(Perfil::class, $novosPerfis[$i]);
 
-                    if ($unidade && $perfil) {
-                        if (!in_array($unidade, $unidades)) {
-                            throw new Exception(
-                                sprintf(
-                                    'Você não tem permissão para adicionar uma lotação da unidade %s',
-                                    $lotacao->getUnidade()
-                                )
-                            );
+                        if ($unidade && $perfil) {
+                            if (!in_array($unidade, $unidades)) {
+                                $error = $translator->trans('error.add_lotation_permission_denied', [
+                                    'unidade' => $lotacao->getUnidade(),
+                                ], self::DOMAIN);
+                                
+                                throw new Exception($error);
+                            }
+
+                            $lotacao = new Lotacao();
+                            $lotacao->setPerfil($perfil);
+                            $lotacao->setUnidade($unidade);
+                            $lotacao->setUsuario($entity);
+                            $entity->getLotacoes()->add($lotacao);
                         }
+                    }
+                }
 
-                        $lotacao = new Lotacao();
-                        $lotacao->setPerfil($perfil);
-                        $lotacao->setUnidade($unidade);
-                        $lotacao->setUsuario($entity);
+                if (!count($entity->getLotacoes())) {
+                    foreach ($lotacoesRemovidas as $lotacao) {
                         $entity->getLotacoes()->add($lotacao);
                     }
+                    throw new Exception($translator->trans('error.no_lotation', [], self::DOMAIN));
                 }
-            }
 
-            if (!count($entity->getLotacoes())) {
-                foreach ($lotacoesRemovidas as $lotacao) {
-                    $entity->getLotacoes()->add($lotacao);
+                if (!$entity->getId()) {
+                    $entity->setAlgorithm('bcrypt');
+                    $entity->setSalt(null);
+
+                    $encoded = $this->encodePassword(
+                        $entity,
+                        $form->get('senha')->getData()
+                    );
+
+                    $entity->setSenha($encoded);
+                    $entity->setAtivo(true);
+                    $entity->setAdmin(false);
+                } else {
+                    $lotacoes = $entity->getLotacoes()->toArray();
+                    $lotacao = end($lotacoes);
+                    $em->getRepository(Entity::class)->updateUnidade($entity, $lotacao->getUnidade());
                 }
-                throw new Exception(sprintf('Você precisar informar ao menos uma lotação.'));
+
+                $em->persist($entity);
+                $em->flush();
+
+                $this->addFlash('success', $translator->trans('label.add_sucess', [], self::DOMAIN));
+                
+                return $this->redirectToRoute('novosga_users_edit', [ 'id' => $entity->getId() ]);
+            } catch (Exception $e) {
+                $this->addFlash('error', $e->getMessage());
             }
-
-            if (!$entity->getId()) {
-                $entity->setAlgorithm('bcrypt');
-                $entity->setSalt(null);
-
-                $encoded = $this->encodePassword(
-                    $entity,
-                    $entity->getSenha(),
-                    $form->get('confirmacaoSenha')->getData()
-                );
-
-                $entity->setSenha($encoded);
-                $entity->setAtivo(true);
-                $entity->setAdmin(false);
-            } else {
-                $lotacoes = $entity->getLotacoes()->toArray();
-                $lotacao = end($lotacoes);
-                $em->getRepository(Entity::class)->updateUnidade($entity, $lotacao->getUnidade());
-            }
-            
-            $em->persist($entity);
-            $em->flush();
-            
-            $trans = $this->get('translator');
-            
-            $this->addFlash('success', $trans->trans('Serviço salvo com sucesso!'));
-            
-            return $this->redirectToRoute('novosga_users_edit', [ 'id' => $entity->getId() ]);
+        }
+        
+        if ($entity->getId()) {
+            $passwordForm = $this->createForm(\Novosga\UsersBundle\Form\ChangePasswordType::class, null, [
+                'action' => $this->generateUrl('novosga_users_password', [ 'id' => $entity->getId() ]),
+            ]);
+        } else {
+            $passwordForm = null;
         }
         
         return $this->render('@NovosgaUsers/default/form.html.twig', [
-            'entity'   => $entity,
-            'form'     => $form->createView(),
-            'unidades' => $unidades,
+            'entity'       => $entity,
+            'unidades'     => $unidades,
+            'form'         => $form->createView(),
+            'passwordForm' => $passwordForm ? $passwordForm->createView() : null,
         ]);
     }
 
@@ -310,37 +321,45 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/password/{id}")
+     * @Route("/password/{id}", name="novosga_users_password")
      * @Method("POST")
      */
     public function passwordAction(Request $request, Entity $user)
     {
-        $envelope = new Envelope();
+        $form = $this->createForm(\Novosga\UsersBundle\Form\ChangePasswordType::class);
+        $form->handleRequest($request);
         
-        $data         = json_decode($request->getContent());
-        $password     = $data->senha;
-        $confirmation = $data->confirmacao;
+        $response = [];
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $encoded = $this->encodePassword(
+                $user,
+                $form->get('senha')->getData()
+            );
+            $user->setSenha($encoded);
 
-        $encoded = $this->encodePassword($user, $password, $confirmation);
-        $user->setSenha($encoded);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->merge($user);
-        $em->flush();
-
+            $em = $this->getDoctrine()->getManager();
+            $em->merge($user);
+            $em->flush();
+        } else {
+            $errors = $form->getErrors(true);
+            if (count($errors)) {
+                $response['error'] = true;
+                $response['errors'] = [];
+                foreach ($errors as $error) {
+                    $response['errors'][$error->getOrigin()->getName()] = $error->getMessage();
+                }
+            }
+        }
+        
+        $envelope = new Envelope();
+        $envelope->setData($response);
+        
         return $this->json($envelope);
     }
     
-    protected function encodePassword(Usuario $user, $password, $confirmation)
+    protected function encodePassword(Usuario $user, $password)
     {
-        if (strlen($password) < 6) {
-            throw new Exception(sprintf('A senha precisa ter no mínimo %s caraceteres.', 6));
-        }
-
-        if ($password !== $confirmation) {
-            throw new Exception('A senha e a confirmação da senha não conferem.');
-        }
-        
         $encoder = $this->container->get('security.password_encoder');
         $encoded = $encoder->encodePassword($user, $password);
         

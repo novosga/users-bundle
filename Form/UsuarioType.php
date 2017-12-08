@@ -19,15 +19,14 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UsuarioType extends AbstractType
 {
@@ -38,11 +37,9 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entity = $options['data'];
-        $usuario = $options['usuario'];
         
         $builder
             ->add('login', TextType::class, [
-                'label' => 'Nome de usuário',
                 'attr' => [
                     'maxlength' => 30,
                     'oninput' => "this.value = this.value.replace(/([^\w\d\.])+/g, '')",
@@ -51,70 +48,82 @@ class UsuarioType extends AbstractType
                     new NotBlank(),
                     new Length([ 'min' => 3, 'max' => 30 ]),
                     new Regex("/^[a-zA-Z0-9\.]+$/"),
-                ]
+                ],
+                'label' => 'form.user.username',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('nome', TextType::class, [
-                'label' => 'Nome',
                 'constraints' => [
                     new NotBlank(),
                     new Length([ 'min' => 3, 'max' => 20 ]),
-                ]
+                ],
+                'label' => 'form.user.name',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('email', EmailType::class, [
-                'label' => 'E-mail',
                 'required' => false,
                 'constraints' => [
                     new Email(),
-                ]
+                ],
+                'label' => 'form.user.email',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('sobrenome', TextType::class, [
-                'label' => 'Sobrenome',
                 'constraints' => [
                     new NotNull(),
                     new Length([ 'max' => 100 ]),
-                ]
+                ],
+                'label' => 'form.user.lastname',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('lotacoesRemovidas', HiddenType::class, [
                 'mapped' => false,
                 'required' => false,
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
         ;
         
         if ($entity->getId()) {
             $builder->add('ativo', CheckboxType::class, [
-                'label' => 'Ativo',
                 'required' => false,
                 'constraints' => [
                     new NotNull(),
-                ]
+                ],
+                'label' => 'form.user.active',
+                'translation_domain' => 'NovosgaUsersBundle',
             ]);
         } else {
             $builder
                 ->add('senha', PasswordType::class, [
-                    'label' => 'Senha',
                     'mapped' => false,
                     'constraints' => [
                         new NotNull(),
                         new Length([ 'min' => 6 ]),
-                    ]
+                    ],
+                    'label' => 'form.user.password',
+                    'translation_domain' => 'NovosgaUsersBundle',
                 ])
                 ->add('confirmacaoSenha', PasswordType::class, [
-                    'label' => 'Confirmação da senha',
                     'mapped' => false,
                     'constraints' => [
                         new Length([ 'min' => 6 ]),
-                    ]
+                        new Callback(function ($object, ExecutionContextInterface $context, $payload) {
+                            $form        = $context->getRoot();
+                            $senha       = $form->get('senha');
+                            $confirmacao = $form->get('confirmacaoSenha');
+                            
+                            if ($senha->getData() !== $confirmacao->getData()) {
+                                $context
+                                    ->buildViolation('error.password_confirm')
+                                    ->setTranslationDomain('NovosgaUsersBundle')
+                                    ->atPath('confirmacaoSenha')
+                                    ->addViolation();
+                            }
+                        }),
+                    ],
+                    'label' => 'form.user.password_confirm',
+                    'translation_domain' => 'NovosgaUsersBundle',
                 ]);
-            
-            $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-                $form        = $event->getForm();
-                $senha       = $form->get('senha');
-                $confirmacao = $form->get('confirmacaoSenha');
-                
-                if ($senha->getData() !== $confirmacao->getData()) {
-                    $confirmacao->addError(new FormError('A senha e a confirmação da senha não conferem.'));
-                }
-            });
         }
     }
     
@@ -127,8 +136,6 @@ class UsuarioType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => Usuario::class
-            ])
-            ->setRequired(['usuario'])
-            ->setAllowedTypes('usuario', Usuario::class);
+            ]);
     }
 }

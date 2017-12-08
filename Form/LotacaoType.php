@@ -54,7 +54,9 @@ class LotacaoType extends AbstractType
                     }
                     
                     return $qb;
-                }
+                },
+                'label' => 'form.lotacao.unidade',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('perfil', EntityType::class, [
                 'class' => Perfil::class,
@@ -62,7 +64,9 @@ class LotacaoType extends AbstractType
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
                             ->orderBy('e.nome', 'ASC');
-                }
+                },
+                'label' => 'form.lotacao.perfil',
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
         ;
     }

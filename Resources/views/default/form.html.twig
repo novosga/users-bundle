@@ -1,11 +1,13 @@
 {% extends "@NovosgaUsers/base.html.twig" %}
 
+{% trans_default_domain 'NovosgaUsersBundle' %}
+
 {% block body %}
     <h1>
         <i class="fa fa-users" aria-hidden="true"></i>
-        {% trans %}Usuários{% endtrans %}
+        {{ 'title'|trans }}
         <small>
-            {% trans %}Gerencie os usuários da unidade atual{% endtrans %}
+            {{ 'subtitle'|trans }}
         </small>
     </h1>
         
@@ -18,9 +20,9 @@
         <div class="row">
             <div class="col-md-5">
                 <fieldset>
-                    <legend>{% trans %}Geral{% endtrans %}</legend>
+                    <legend>{{ 'section.general.title'|trans }}</legend>
 
-                    <p class="text-secondary">{% trans %}Dados básico do usuário.{% endtrans %}</p>
+                    <p class="text-secondary">{{ 'section.general.subtitle'|trans }}</p>
 
                     {{ form_row(form.login) }}
 
@@ -43,7 +45,7 @@
                             <div class="col-6 text-right">
                                 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-senha">
                                     <i class="fa fa-lock"></i>
-                                    {% trans %}Alterar senha{% endtrans %}
+                                    {{ 'button.change_password'|trans }}
                                 </button>
                             </div>
                         </div>
@@ -58,15 +60,15 @@
             </div>
             <div class="col-6 ml-auto" id="lotacoes">
                 <fieldset>
-                    <legend>{% trans %}Lotações{% endtrans %}</legend>
+                    <legend>{{ 'section.lotation.title'|trans }}</legend>
 
-                    <p class="text-secondary">{% trans %}Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.{% endtrans %}</p>
+                    <p class="text-secondary">{{ 'section.lotation.subtitle'|trans }}</p>
                     
                     <table class="table">
                         <thead class="thead-light">
                             <tr>
-                                <th>{% trans %}Unidade{% endtrans %}</th>
-                                <th>{% trans %}Perfil{% endtrans %}</th>
+                                <th>{{ 'label.unity'|trans }}</th>
+                                <th>{{ 'label.role'|trans }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -85,11 +87,11 @@
                                     <input type="hidden" name="novosPerfis[]" v-bind:value="lotacao.perfil.id" v-if="lotacao.novo">
                                 </td>
                                 <td class="text-right text-nowrap">
-                                    <button type="button" title="{% trans %}Visualizar permissões{% endtrans %}" class="btn btn-secondary" v-on:click="viewPerfil(lotacao.perfil.id)">
+                                    <button type="button" title="{{ 'button.view_permissions'|trans }}" class="btn btn-secondary" v-on:click="viewPerfil(lotacao.perfil.id)">
                                         <i class="fa fa-eye"></i>
                                     </button>
 
-                                    <button type="button" title="{% trans %}Remover{% endtrans %}" class="btn btn-danger" v-on:click="remove(lotacao)">
+                                    <button type="button" title="{{ 'button.remove'|trans }}" class="btn btn-danger" v-on:click="remove(lotacao)">
                                         <i class="fa fa-remove"></i>
                                     </button>
                                 </td>
@@ -102,7 +104,7 @@
                                 <td class="text-right">
                                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-lotacao">
                                         <i class="fa fa-plus"></i>&nbsp;
-                                        {% trans %}Adicionar{% endtrans %}
+                                        {{ 'button.add'|trans }}
                                     </button>
                                 </td>
                             </tr>
@@ -120,11 +122,11 @@
         <div class="buttons">
             <button type="submit" class="btn btn-primary">
                 <i class="fa fa-check"></i> 
-                {% trans %}Salvar{% endtrans %}
+                {{ 'button.save'|trans }}
             </button>
             <a href="{{ path('novosga_users_index') }}" class="btn btn-secondary">
                 <i class="fa fa-chevron-left"></i>
-                {% trans %}Voltar{% endtrans %}
+                {{ 'button.back'|trans }}
             </a>
         </div>
 
@@ -137,7 +139,7 @@
             <div class="modal-content">
                 <form id="lotacao-form">
                     <div class="modal-header">
-                        <h5 class="modal-title">{% trans %}Lotação{% endtrans %}</h5>
+                        <h5 class="modal-title">{{ 'label.lotation'|trans}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -145,30 +147,30 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            {% trans %}Fechar{% endtrans %}
+                            {{ 'button.close'|trans }}
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            {% trans %}Adicionar{% endtrans %}
+                            {{ 'button.add'|trans }}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-                            
+                        
     {# permissoes #}
     <div id="dialog-perfil" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{% trans %}Perfil{% endtrans %}</h5>
+                    <h5 class="modal-title">{{ 'label.role'|trans }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body" v-if="perfil">
                     <table class="table table-bordered">
                         <tr>
                             <th>
-                                {% trans %}Nome{% endtrans %}
+                                {{ 'label.name'|trans }}
                             </th>
                             <td>
                                 {% verbatim %}
@@ -178,7 +180,7 @@
                         </tr>
                         <tr>
                             <th>
-                                {% trans %}Descrição{% endtrans %}
+                                {{ 'label.description'|trans }}
                             </th>
                             <td>
                                 {% verbatim %}
@@ -188,7 +190,7 @@
                         </tr>
                         <tr>
                             <th>
-                                {% trans %}Permissões{% endtrans %}
+                                {{ 'label.permissions'|trans }}
                             </th>
                             <td>
                                 {% verbatim %}
@@ -207,31 +209,33 @@
     </div>
 
     {# dialog mudar senha apenas para usuarios ja cadastrados #}
-    {% if entity.id > 0 %}
+    {% if passwordForm %}
         <div id="dialog-senha" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form>
+                    {{ form_start(passwordForm, { attr: { 'v-on:submit.prevent': 'alterarSenha' } }) }}
                         <div class="modal-header">
-                            <h5 class="modal-title">{% trans %}Alterar senha{% endtrans %}</h5>
+                            <h5 class="modal-title">{{ 'label.change_password'|trans }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="senha_senha">{% trans %}Nova Senha{% endtrans %}</label>
-                                <input id="senha_senha" type="password" class="form-control" required>
+                                {{ form_label(passwordForm.senha) }}
+                                {{ form_widget(passwordForm.senha) }}
+                                <div v-if="errors.senha" v-text="errors.senha"></div>
                             </div>
                             <div class="form-group">
-                                <label for="senha_confirmacao">{% trans %}Confirmar senha{% endtrans %}</label>
-                                <input id="senha_confirmacao" type="password" class="form-control" required>
+                                {{ form_label(passwordForm.confirmacaoSenha) }}
+                                {{ form_widget(passwordForm.confirmacaoSenha) }}
+                                <div v-if="errors.confirmacaoSenha" v-text="errors.confirmacaoSenha"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">
-                                {% trans %}Alterar{% endtrans %}
+                                {{ 'button.change'|trans }}
                             </button>
                         </div>
-                    </form>
+                    {{ form_end(passwordForm) }}
                 </div>
             </div>
         </div>
