@@ -3,198 +3,197 @@
     <body>
       <trans-unit id="0">
         <source>module.name</source>
-        <target>Usuarios</target>
+        <target>Selección</target>
         
       </trans-unit>
       <trans-unit id="1">
         <source>title</source>
-        <target>Usuarios</target>
+        <target>Selección</target>
         
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Administre los usuarios de la unidad actual</target>
+        <target>Emisión de turnos</target>
         
       </trans-unit>
       <trans-unit id="3">
-        <source>form.lotacao.unidade</source>
-        <target>Unidad</target>
+        <source>button.find</source>
+        <target>Consultar</target>
         
       </trans-unit>
       <trans-unit id="4">
-        <source>form.lotacao.perfil</source>
-        <target>Perfil</target>
+        <source>placeholder.search</source>
+        <target>Buscar turno</target>
         
       </trans-unit>
       <trans-unit id="5">
-        <source>form.user.username</source>
-        <target>Usuario</target>
+        <source>label.no_priority</source>
+        <target>Normal</target>
         
       </trans-unit>
       <trans-unit id="6">
-        <source>form.user.name</source>
-        <target>Nombre</target>
+        <source>label.priority</source>
+        <target>Prioridad</target>
         
       </trans-unit>
       <trans-unit id="7">
-        <source>form.user.lastname</source>
-        <target>Apellido</target>
+        <source>label.total</source>
+        <target>Total</target>
         
       </trans-unit>
       <trans-unit id="8">
-        <source>form.user.email</source>
-        <target>E-mail</target>
+        <source>modal.attendance</source>
+        <target>Atención</target>
         
       </trans-unit>
       <trans-unit id="9">
-        <source>form.user.active</source>
-        <target>Activo</target>
-        
-      </trans-unit>
-      <trans-unit id="10">
-        <source>form.user.password</source>
+        <source>modal.attendance.ticket</source>
         <target>Turno</target>
         
       </trans-unit>
+      <trans-unit id="10">
+        <source>label.service</source>
+        <target>Servicio</target>
+        
+      </trans-unit>
       <trans-unit id="11">
-        <source>form.user.password_confirm</source>
+        <source>label.ticket.wait_time</source>
+        <target>Tiempo de espera</target>
         
       </trans-unit>
       <trans-unit id="12">
-        <source>error.password_confirm</source>
+        <source>label.customer</source>
+        <target>Cliente</target>
         
       </trans-unit>
       <trans-unit id="13">
-        <source>section.general.title</source>
-        <target>General</target>
-        
-      </trans-unit>
-      <trans-unit id="14">
-        <source>section.general.subtitle</source>
-        <target>Datos básicos del usuario.</target>
-        
-      </trans-unit>
-      <trans-unit id="15">
-        <source>section.lotation.title</source>
-        <target>Dotaciones</target>
-        
-      </trans-unit>
-      <trans-unit id="16">
-        <source>section.lotation.subtitle</source>
-        <target>La dotación es utilizada para definir el perfil de acceso del usuario a las unidades.</target>
-        
-      </trans-unit>
-      <trans-unit id="17">
-        <source>label.unity</source>
-        <target>Unidad</target>
-        
-      </trans-unit>
-      <trans-unit id="18">
-        <source>label.role</source>
-        <target>Perfil</target>
-        
-      </trans-unit>
-      <trans-unit id="19">
-        <source>button.add</source>
-        <target>Agregar</target>
-        
-      </trans-unit>
-      <trans-unit id="20">
-        <source>button.save</source>
-        <target>Guardar</target>
-        
-      </trans-unit>
-      <trans-unit id="21">
-        <source>button.back</source>
-        <target>Volver</target>
-        
-      </trans-unit>
-      <trans-unit id="22">
-        <source>button.close</source>
-        <target>Cerrar</target>
-        
-      </trans-unit>
-      <trans-unit id="23">
-        <source>button.change</source>
-        <target>Modificar</target>
-        
-      </trans-unit>
-      <trans-unit id="24">
-        <source>button.new_user</source>
-        
-      </trans-unit>
-      <trans-unit id="25">
-        <source>button.change_password</source>
-        <target>Modificar contraseña</target>
-        
-      </trans-unit>
-      <trans-unit id="26">
-        <source>button.view_permissions</source>
-        <target>Ver permisos</target>
-        
-      </trans-unit>
-      <trans-unit id="27">
-        <source>button.remove</source>
-        <target>Suprimir</target>
-        
-      </trans-unit>
-      <trans-unit id="28">
-        <source>label.lotation</source>
-        <target>Dotación</target>
-        
-      </trans-unit>
-      <trans-unit id="29">
-        <source>label.name</source>
+        <source>label.customer.name</source>
         <target>Nombre</target>
         
       </trans-unit>
-      <trans-unit id="30">
-        <source>label.description</source>
-        <target>Descripción</target>
+      <trans-unit id="14">
+        <source>label.customer.id</source>
+        <target>Nombre</target>
         
       </trans-unit>
-      <trans-unit id="31">
-        <source>label.permissions</source>
-        <target>Permisos</target>
+      <trans-unit id="15">
+        <source>label.yes</source>
+        <target>Sí</target>
         
       </trans-unit>
-      <trans-unit id="32">
+      <trans-unit id="16">
+        <source>label.no</source>
+        <target>No</target>
+        
+      </trans-unit>
+      <trans-unit id="17">
+        <source>alert.title</source>
+        <target>Atención</target>
+        
+      </trans-unit>
+      <trans-unit id="18">
+        <source>alert.cancel.text</source>
+        <target>Desea realmente cancelar este turno?</target>
+        
+      </trans-unit>
+      <trans-unit id="19">
+        <source>alert.reactivate.text</source>
+        <target>Desea realmente reactivar este turno?</target>
+        
+      </trans-unit>
+      <trans-unit id="20">
+        <source>alert.transfer.text</source>
+        <target>Desea realmente transferir este turno?</target>
+        
+      </trans-unit>
+      <trans-unit id="21">
+        <source>modal.attendance.button.reactivate</source>
+        <target>Reactivar turno</target>
+        
+      </trans-unit>
+      <trans-unit id="22">
+        <source>modal.attendance.button.transfer</source>
+        <target>Transferir / Modificar turno</target>
+        
+      </trans-unit>
+      <trans-unit id="23">
+        <source>modal.attendance.button.cancel</source>
+        <target>Cancelar turno</target>
+        
+      </trans-unit>
+      <trans-unit id="24">
+        <source>modal.transfer</source>
+        <target>Transferir turno</target>
+        
+      </trans-unit>
+      <trans-unit id="25">
+        <source>modal.transfer.button</source>
+        <target>Transferir</target>
+        
+      </trans-unit>
+      <trans-unit id="35">
+        <source>modal.search</source>
+        <target>Busca</target>
+        
+      </trans-unit>
+      <trans-unit id="36">
+        <source>modal.search.placeholder</source>
+        <target>Turno completo, sigla o número</target>
+        
+      </trans-unit>
+      <trans-unit id="37">
+        <source>label.ticket.number</source>
+        <target>Número</target>
+        
+      </trans-unit>
+      <trans-unit id="38">
+        <source>label.ticket.arrival_date</source>
+        <target>Hora de ingreso</target>
+        
+      </trans-unit>
+      <trans-unit id="39">
+        <source>label.ticket.start_date</source>
+        <target>Hora de inicio</target>
+        
+      </trans-unit>
+      <trans-unit id="40">
+        <source>label.ticket.end_date</source>
+        <target>Hora de finalización</target>
+        
+      </trans-unit>
+      <trans-unit id="41">
+        <source>label.triage</source>
+        <target>Selección</target>
+        
+      </trans-unit>
+      <trans-unit id="42">
+        <source>label.ticket.user</source>
+        <target>Operador</target>
+        
+      </trans-unit>
+      <trans-unit id="43">
         <source>label.status</source>
         <target>Situación</target>
         
       </trans-unit>
-      <trans-unit id="33">
-        <source>label.enabled</source>
-        <target>Activo</target>
+      <trans-unit id="44">
+        <source>MM/DD/YYYY hh:mm:ss</source>
+        <target>DD/MM/YYYY hh:mm:ss</target>
         
       </trans-unit>
-      <trans-unit id="34">
-        <source>label.disabled</source>
-        <target>Inactivo</target>
+      <trans-unit id="49">
+        <source>modal.search.button.submit</source>
+        <target>Consultar</target>
         
       </trans-unit>
-      <trans-unit id="35">
-        <source>label.search</source>
-        <target>Buscar</target>
+      <trans-unit id="50">
+        <source>server.datetime</source>
+        <target>Fecha y hora en el servidor</target>
         
       </trans-unit>
-      <trans-unit id="36">
-        <source>label.username</source>
-        <target>Usuario</target>
-        
-      </trans-unit>
-      <trans-unit id="37">
-        <source>label.change_password</source>
-        <target>Modificar contraseña</target>
-        
-      </trans-unit>
-      <trans-unit id="38">
-        <source>label.new_password</source>
-        
-      </trans-unit>
-      <trans-unit id="39">
-        <source>label.password_confirm</source>
-        <target>Confirmar contraseña</target>
+      <trans-unit id="51">
+        <source>error.invalid_service</source>
+        <target>Servicio inválido</target>
         
       </trans-unit>
     </body>
