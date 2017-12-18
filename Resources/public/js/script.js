@@ -28,12 +28,12 @@
         el: '#lotacoes',
         data: {
             lotacoes: lotacoes,
-            lotacoesRemovidas: []
+            lotacoesRemovidas: lotacoesRemovidas
         },
         computed: {
-            unidadesRemovidas: function () {
+            idsLotacoesRemovidas: function () {
                 return this.lotacoesRemovidas.map(function (lotacao) {
-                    return lotacao.unidade.id;
+                    return lotacao.id;
                 }).join(',');
             }
         },
@@ -44,7 +44,9 @@
             },
             remove: function (lotacao) {
                 this.lotacoes.splice(this.lotacoes.indexOf(lotacao), 1);
-                this.lotacoesRemovidas.push(lotacao);
+                if (lotacao.id) {
+                    this.lotacoesRemovidas.push(lotacao);
+                }
             },
             viewPerfil: function (id) {
                 dialogPerfil.viewPerfil(id);
@@ -81,7 +83,7 @@
     
     $('#dialog-lotacao').on('show.bs.modal', function () {
         var ids = lotacoesTable.lotacoes.map(function(lotacao) { 
-            return lotacao.unidade.id; 
+            return lotacao.id; 
         });
         
         $(this)

@@ -111,7 +111,7 @@
                         </tfoot>
                     </table>
                     
-                    {{ form_row(form.lotacoesRemovidas, { attr: { 'v-model': 'unidadesRemovidas' } }) }}
+                    {{ form_row(form.lotacoesRemovidas, { attr: { 'v-model': 'idsLotacoesRemovidas' } }) }}
                     
                 </fieldset>
             </div>
@@ -245,10 +245,26 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var unidades = [ {% for unidade in unidades %}{{ unidade.id }},{% endfor %} ],
-            lotacoes = [ 
+        var unidades = [ {% for unidade in unidades %}{{ unidade.id }},{% endfor %} ];
+        var lotacoes = [ 
                 {%- for lotacao in entity.lotacoes -%}
                     {
+                        id: {{ lotacao.id ? lotacao.id : 'null' }},
+                        unidade: {
+                            id: {{ lotacao.unidade.id }},
+                            nome: "{{ lotacao.unidade.nome }}"
+                        },
+                        perfil: {
+                            id: {{ lotacao.perfil.id }},
+                            nome: "{{ lotacao.perfil.nome }}"
+                        }
+                    },
+                {%- endfor -%} 
+            ];
+        var lotacoesRemovidas = [
+                {%- for lotacao in lotacoesRemovidas -%}
+                    {
+                        id: {{ lotacao.id }},
                         unidade: {
                             id: {{ lotacao.unidade.id }},
                             nome: "{{ lotacao.unidade.nome }}"

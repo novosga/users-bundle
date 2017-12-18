@@ -49,7 +49,7 @@ class DefaultController extends Controller
         
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        
+       
         $qb = $this
                 ->getDoctrine()
                 ->getManager()
@@ -58,7 +58,7 @@ class DefaultController extends Controller
                 ->from(Entity::class, 'e');
         
         $params = [];
-                    
+        
         if (!$usuario->isAdmin()) {
             $qb
                 ->join('e.lotacoes', 'l')
@@ -144,11 +144,12 @@ class DefaultController extends Controller
         $em          = $this->getDoctrine()->getManager();
         $currentUser = $this->getUser();
         $unidades    = $em->getRepository(Unidade::class)->findByUsuario($currentUser);
+        $isAdmin     = $currentUser->isAdmin();
         
         $form = $this->createForm(EntityType::class, $entity);
         $form->handleRequest($request);
         
-        if (!$currentUser->isAdmin()) {
+        if (!$isAdmin) {
             $lotacoes = $entity->getLotacoes()->toArray();
 
             $existe = false;
@@ -166,19 +167,20 @@ class DefaultController extends Controller
             }
         }
         
+        $lotacoesRemovidas = [];
+        
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 /* @var $unidadesRemovidas Lotacao[] */
                 $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData());
-                $lotacoesRemovidas = [];
 
                 if (count($unidadesRemovidas)) {
-                    foreach ($unidadesRemovidas as $unidadeId) {
+                    foreach ($unidadesRemovidas as $lotacaoId) {
                         foreach ($entity->getLotacoes() as $lotacao) {
-                            if ($lotacao->getUnidade()->getId() == $unidadeId) {
-                                if (!in_array($lotacao->getUnidade(), $unidades)) {
+                            if ($lotacao->getId() === ((int) $lotacaoId)) {
+                                if (!$isAdmin && !in_array($lotacao->getUnidade(), $unidades)) {
                                     $error = $translator->trans('error.remove_lotation_permission_denied', [
-                                        'unidade' => $lotacao->getUnidade(),
+                                        '%unidade%' => $lotacao->getUnidade(),
                                     ], self::DOMAIN);
                                     
                                     throw new Exception($error);
@@ -199,9 +201,9 @@ class DefaultController extends Controller
                         $perfil  = $em->find(Perfil::class, $novosPerfis[$i]);
 
                         if ($unidade && $perfil) {
-                            if (!in_array($unidade, $unidades)) {
+                            if (!$isAdmin && !in_array($unidade, $unidades)) {
                                 $error = $translator->trans('error.add_lotation_permission_denied', [
-                                    'unidade' => $lotacao->getUnidade(),
+                                    '%unidade%' => $lotacao->getUnidade(),
                                 ], self::DOMAIN);
                                 
                                 throw new Exception($error);
@@ -222,8 +224,10 @@ class DefaultController extends Controller
                     }
                     throw new Exception($translator->trans('error.no_lotation', [], self::DOMAIN));
                 }
+                
+                $isNew = !$entity->getId();
 
-                if (!$entity->getId()) {
+                if ($isNew) {
                     $entity->setAlgorithm('bcrypt');
                     $entity->setSalt(null);
 
@@ -235,14 +239,19 @@ class DefaultController extends Controller
                     $entity->setSenha($encoded);
                     $entity->setAtivo(true);
                     $entity->setAdmin(false);
+                    
+                    $em->persist($entity);
                 } else {
+                    $em->merge($entity);
+                }
+                
+                $em->flush();
+                
+                if (!$isNew) {
                     $lotacoes = $entity->getLotacoes()->toArray();
                     $lotacao = end($lotacoes);
                     $em->getRepository(Entity::class)->updateUnidade($entity, $lotacao->getUnidade());
                 }
-
-                $em->persist($entity);
-                $em->flush();
 
                 $this->addFlash('success', $translator->trans('label.add_sucess', [], self::DOMAIN));
                 
@@ -261,10 +270,11 @@ class DefaultController extends Controller
         }
         
         return $this->render('@NovosgaUsers/default/form.html.twig', [
-            'entity'       => $entity,
-            'unidades'     => $unidades,
-            'form'         => $form->createView(),
-            'passwordForm' => $passwordForm ? $passwordForm->createView() : null,
+            'entity'            => $entity,
+            'unidades'          => $unidades,
+            'form'              => $form->createView(),
+            'passwordForm'      => $passwordForm ? $passwordForm->createView() : null,
+            'lotacoesRemovidas' => $lotacoesRemovidas,
         ]);
     }
 
