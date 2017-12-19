@@ -22,7 +22,7 @@ class NovosgaUsersBundle extends BaseModule
 
     public function getDisplayName()
     {
-        return 'Usuários';
+        return 'module.name';
     }
 
     public function getHomeRoute()
