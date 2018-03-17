@@ -43,7 +43,7 @@ class DefaultController extends Controller
      * @Route("/", name="novosga_users_index")
      * @Method("GET")
      */
-    public function indexAction(Request $request)
+    public function index(Request $request)
     {
         $search = $request->get('q');
         
@@ -135,7 +135,7 @@ class DefaultController extends Controller
      * @Route("/{id}/edit", name="novosga_users_edit")
      * @Method({"GET", "POST"})
      */
-    public function formAction(Request $request, TranslatorInterface $translator, Entity $entity = null)
+    public function form(Request $request, TranslatorInterface $translator, Entity $entity = null)
     {
         if (!$entity) {
             $entity = new Entity();
@@ -281,7 +281,7 @@ class DefaultController extends Controller
     /**
      * @Route("/novalotacao")
      */
-    public function novaLotacaoAction(Request $request)
+    public function novaLotacao(Request $request)
     {
         $usuario = $this->getUser();
         $lotacao = new Lotacao();
@@ -303,7 +303,7 @@ class DefaultController extends Controller
     /**
      * @Route("/perfis/{id}")
      */
-    public function perfisAction(Request $request, Perfil $perfil)
+    public function perfis(Request $request, Perfil $perfil)
     {
         $envelope = new Envelope();
         $envelope->setData($perfil);
@@ -314,7 +314,7 @@ class DefaultController extends Controller
     /**
      * @Route("/unidades")
      */
-    public function unidadesAction(Request $request)
+    public function unidades(Request $request)
     {
         $envelope = new Envelope();
         $user = $this->getUser();
@@ -334,7 +334,7 @@ class DefaultController extends Controller
      * @Route("/password/{id}", name="novosga_users_password")
      * @Method("POST")
      */
-    public function passwordAction(Request $request, Entity $user)
+    public function password(Request $request, Entity $user)
     {
         $form = $this->createForm(\Novosga\UsersBundle\Form\ChangePasswordType::class);
         $form->handleRequest($request);
