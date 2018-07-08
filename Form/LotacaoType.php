@@ -37,8 +37,8 @@ class LotacaoType extends AbstractType
                 'placeholder' => '',
                 'query_builder' => function (EntityRepository $er) use ($usuario, $ignore) {
                     $qb = $er
-                            ->createQueryBuilder('e')
-                            ->orderBy('e.nome', 'ASC');
+                        ->createQueryBuilder('e')
+                        ->orderBy('e.nome', 'ASC');
                             
                     if (!$usuario->isAdmin()) {
                         $qb

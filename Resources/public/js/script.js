@@ -83,7 +83,7 @@
     
     $('#dialog-lotacao').on('show.bs.modal', function () {
         var ids = lotacoesTable.lotacoes.map(function(lotacao) { 
-            return lotacao.id; 
+            return lotacao.unidade.id; 
         });
         
         $(this)
