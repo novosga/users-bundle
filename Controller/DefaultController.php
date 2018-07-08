@@ -51,11 +51,11 @@ class DefaultController extends Controller
         $unidade = $usuario->getLotacao()->getUnidade();
        
         $qb = $this
-                ->getDoctrine()
-                ->getManager()
-                ->createQueryBuilder()
-                ->select('e')
-                ->from(Entity::class, 'e');
+            ->getDoctrine()
+            ->getManager()
+            ->createQueryBuilder()
+            ->select('e')
+            ->from(Entity::class, 'e');
         
         $params = [];
         
@@ -174,7 +174,7 @@ class DefaultController extends Controller
                 /* @var $unidadesRemovidas Lotacao[] */
                 $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData());
 
-                if (count($unidadesRemovidas)) {
+                if (is_array($unidadesRemovidas) && count($unidadesRemovidas)) {
                     foreach ($unidadesRemovidas as $lotacaoId) {
                         foreach ($entity->getLotacoes() as $lotacao) {
                             if ($lotacao->getId() === ((int) $lotacaoId)) {
@@ -191,11 +191,11 @@ class DefaultController extends Controller
                         }
                     }
                 }
-
+                
                 $novasUnidades = $request->get('novasUnidades');
                 $novosPerfis   = $request->get('novosPerfis');
 
-                if (count($novasUnidades) && count($novosPerfis)) {
+                if (is_array($novasUnidades) && count($novasUnidades) && count($novosPerfis)) {
                     for ($i = 0; $i < count($novasUnidades); $i++) {
                         $unidade = $em->find(Unidade::class, $novasUnidades[$i]);
                         $perfil  = $em->find(Perfil::class, $novosPerfis[$i]);
@@ -208,21 +208,40 @@ class DefaultController extends Controller
                                 
                                 throw new Exception($error);
                             }
+                            
+                            $lotacao = null;
+                            
+                            // tenta reaproveitar uma lotacao da mesma unidade
+                            foreach ($lotacoesRemovidas as $l) {
+                                if ($l->getUnidade()->getId() === $unidade->getId()) {
+                                    $lotacao = $l;
+                                    break;
+                                }
+                            }
 
-                            $lotacao = new Lotacao();
+                            if (!$lotacao) {
+                                $lotacao = new Lotacao();
+                                $lotacao->setUnidade($unidade);
+                                $lotacao->setUsuario($entity);
+                            }
+                            
                             $lotacao->setPerfil($perfil);
-                            $lotacao->setUnidade($unidade);
-                            $lotacao->setUsuario($entity);
                             $entity->getLotacoes()->add($lotacao);
                         }
                     }
                 }
 
                 if (!count($entity->getLotacoes())) {
-                    foreach ($lotacoesRemovidas as $lotacao) {
-                        $entity->getLotacoes()->add($lotacao);
-                    }
                     throw new Exception($translator->trans('error.no_lotation', [], self::DOMAIN));
+                }
+                
+                // somente uma lotacao por unidade
+                $unidadesMap = [];
+                foreach ($entity->getLotacoes() as $lotacao) {
+                    if (isset($unidadesMap[$lotacao->getUnidade()->getId()])) {
+                        throw new Exception($translator->trans('error.more_than_one_lotation', [], self::DOMAIN));
+                    }
+                    $unidadesMap[$lotacao->getUnidade()->getId()] = true;
                 }
                 
                 $isNew = !$entity->getId();

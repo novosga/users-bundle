@@ -221,13 +221,13 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 {{ form_label(passwordForm.senha) }}
-                                {{ form_widget(passwordForm.senha) }}
-                                <div v-if="errors.senha" v-text="errors.senha"></div>
+                                {{ form_widget(passwordForm.senha, { attr: { 'v-bind:class': "{'is-invalid': errors.senha}" } }) }}
+                                <div v-text="errors.senha" v-bind:class="{'invalid-feedback': errors.senha}"></div>
                             </div>
                             <div class="form-group">
                                 {{ form_label(passwordForm.confirmacaoSenha) }}
-                                {{ form_widget(passwordForm.confirmacaoSenha) }}
-                                <div v-if="errors.confirmacaoSenha" v-text="errors.confirmacaoSenha"></div>
+                                {{ form_widget(passwordForm.confirmacaoSenha, { attr: { 'v-bind:class': "{'is-invalid': errors.confirmacaoSenha}" } }) }}
+                                <div v-text="errors.confirmacaoSenha" v-bind:class="{'invalid-feedback': errors.confirmacaoSenha}"></div>
                             </div>
                         </div>
                         <div class="modal-footer">

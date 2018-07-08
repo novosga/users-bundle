@@ -1,200 +1,181 @@
 <?xml version="1.0" ?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="es-AR">
+  <file datatype="plaintext" original="NovosgaUsersBundle.pt_BR.xlf" source-language="pt-BR" target-language="es-AR">
     <body>
       <trans-unit id="0">
         <source>module.name</source>
-        <target>Selección</target>
-        
+        <target>Usuários</target>
       </trans-unit>
       <trans-unit id="1">
         <source>title</source>
-        <target>Selección</target>
-        
+        <target>Usuários</target>
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Emisión de turnos</target>
-        
+        <target>Gerencie os usuários da unidade atual</target>
       </trans-unit>
       <trans-unit id="3">
-        <source>button.find</source>
-        <target>Consultar</target>
-        
+        <source>form.lotacao.unidade</source>
+        <target>Unidade</target>
       </trans-unit>
       <trans-unit id="4">
-        <source>placeholder.search</source>
-        <target>Buscar turno</target>
-        
+        <source>form.lotacao.perfil</source>
+        <target>Perfil</target>
       </trans-unit>
       <trans-unit id="5">
-        <source>label.no_priority</source>
-        <target>Normal</target>
-        
+        <source>form.user.username</source>
+        <target>Nome de usuário</target>
       </trans-unit>
       <trans-unit id="6">
-        <source>label.priority</source>
-        <target>Prioridad</target>
-        
+        <source>form.user.name</source>
+        <target>Nome</target>
       </trans-unit>
       <trans-unit id="7">
-        <source>label.total</source>
-        <target>Total</target>
-        
+        <source>form.user.lastname</source>
+        <target>Sobrenome</target>
       </trans-unit>
       <trans-unit id="8">
-        <source>modal.attendance</source>
-        <target>Atención</target>
-        
+        <source>form.user.email</source>
+        <target>E-mail</target>
       </trans-unit>
       <trans-unit id="9">
-        <source>modal.attendance.ticket</source>
-        <target>Turno</target>
-        
+        <source>form.user.active</source>
+        <target>Ativo</target>
       </trans-unit>
       <trans-unit id="10">
-        <source>label.service</source>
-        <target>Servicio</target>
-        
+        <source>form.user.password</source>
+        <target>Senha</target>
       </trans-unit>
       <trans-unit id="11">
-        <source>label.ticket.wait_time</source>
-        <target>Tiempo de espera</target>
-        
+        <source>form.user.password_confirm</source>
+        <target>Confirmação da senha</target>
       </trans-unit>
       <trans-unit id="12">
-        <source>label.customer</source>
-        <target>Cliente</target>
-        
+        <source>error.password_confirm</source>
+        <target>A senha e a confirmação da senha não conferem.</target>
       </trans-unit>
       <trans-unit id="13">
-        <source>label.customer.name</source>
-        <target>Nombre</target>
-        
+        <source>section.general.title</source>
+        <target>Geral</target>
       </trans-unit>
       <trans-unit id="14">
-        <source>label.customer.id</source>
-        <target>Nombre</target>
-        
+        <source>section.general.subtitle</source>
+        <target>Dados básico do usuário.</target>
       </trans-unit>
       <trans-unit id="15">
-        <source>label.yes</source>
-        <target>Sí</target>
-        
+        <source>section.lotation.title</source>
+        <target>Lotações</target>
       </trans-unit>
       <trans-unit id="16">
-        <source>label.no</source>
-        <target>No</target>
-        
+        <source>section.lotation.subtitle</source>
+        <target>Lotação é utilizada para definir o perfil de acesso do usuário nas unidades.</target>
       </trans-unit>
       <trans-unit id="17">
-        <source>alert.title</source>
-        <target>Atención</target>
-        
+        <source>label.unity</source>
+        <target>Unidade</target>
       </trans-unit>
       <trans-unit id="18">
-        <source>alert.cancel.text</source>
-        <target>Desea realmente cancelar este turno?</target>
-        
+        <source>label.role</source>
+        <target>Perfil</target>
       </trans-unit>
       <trans-unit id="19">
-        <source>alert.reactivate.text</source>
-        <target>Desea realmente reactivar este turno?</target>
-        
+        <source>button.add</source>
+        <target>Adicionar</target>
       </trans-unit>
       <trans-unit id="20">
-        <source>alert.transfer.text</source>
-        <target>Desea realmente transferir este turno?</target>
-        
+        <source>button.save</source>
+        <target>Salvar</target>
       </trans-unit>
       <trans-unit id="21">
-        <source>modal.attendance.button.reactivate</source>
-        <target>Reactivar turno</target>
-        
+        <source>button.back</source>
+        <target>Voltar</target>
       </trans-unit>
       <trans-unit id="22">
-        <source>modal.attendance.button.transfer</source>
-        <target>Transferir / Modificar turno</target>
-        
+        <source>button.close</source>
+        <target>Fechar</target>
       </trans-unit>
       <trans-unit id="23">
-        <source>modal.attendance.button.cancel</source>
-        <target>Cancelar turno</target>
-        
+        <source>button.change</source>
+        <target>Alterar</target>
       </trans-unit>
       <trans-unit id="24">
-        <source>modal.transfer</source>
-        <target>Transferir turno</target>
-        
+        <source>button.new_user</source>
+        <target>Novo usuário</target>
       </trans-unit>
       <trans-unit id="25">
-        <source>modal.transfer.button</source>
-        <target>Transferir</target>
-        
+        <source>button.change_password</source>
+        <target>Alterar senha</target>
+      </trans-unit>
+      <trans-unit id="26">
+        <source>button.view_permissions</source>
+        <target>Visualizar permissões</target>
+      </trans-unit>
+      <trans-unit id="27">
+        <source>button.remove</source>
+        <target>Remover</target>
+      </trans-unit>
+      <trans-unit id="28">
+        <source>label.lotation</source>
+        <target>Lotação</target>
+      </trans-unit>
+      <trans-unit id="29">
+        <source>label.name</source>
+        <target>Nome</target>
+      </trans-unit>
+      <trans-unit id="30">
+        <source>label.description</source>
+        <target>Descrição</target>
+      </trans-unit>
+      <trans-unit id="31">
+        <source>label.permissions</source>
+        <target>Permissões</target>
+      </trans-unit>
+      <trans-unit id="32">
+        <source>label.status</source>
+        <target>Situação</target>
+      </trans-unit>
+      <trans-unit id="33">
+        <source>label.enabled</source>
+        <target>Ativo</target>
+      </trans-unit>
+      <trans-unit id="34">
+        <source>label.disabled</source>
+        <target>Inativo</target>
       </trans-unit>
       <trans-unit id="35">
-        <source>modal.search</source>
-        <target>Busca</target>
-        
+        <source>label.search</source>
+        <target>Buscar</target>
       </trans-unit>
       <trans-unit id="36">
-        <source>modal.search.placeholder</source>
-        <target>Turno completo, sigla o número</target>
-        
+        <source>label.username</source>
+        <target>Nome de usuário</target>
       </trans-unit>
       <trans-unit id="37">
-        <source>label.ticket.number</source>
-        <target>Número</target>
-        
-      </trans-unit>
-      <trans-unit id="38">
-        <source>label.ticket.arrival_date</source>
-        <target>Hora de ingreso</target>
-        
-      </trans-unit>
-      <trans-unit id="39">
-        <source>label.ticket.start_date</source>
-        <target>Hora de inicio</target>
-        
+        <source>label.change_password</source>
+        <target>Alterar senha</target>
       </trans-unit>
       <trans-unit id="40">
-        <source>label.ticket.end_date</source>
-        <target>Hora de finalización</target>
-        
+        <source>label.add_sucess</source>
+        <target>Usuário adicionado com sucesso</target>
       </trans-unit>
       <trans-unit id="41">
-        <source>label.triage</source>
-        <target>Selección</target>
-        
+        <source>error.no_lotation</source>
+        <target>Você precisar informar ao menos uma lotação</target>
       </trans-unit>
       <trans-unit id="42">
-        <source>label.ticket.user</source>
-        <target>Operador</target>
-        
+        <source>error.add_lotation_permission_denied</source>
+        <target>Você não tem permissão para adicionar uma lotação da unidade %unidade%</target>
       </trans-unit>
       <trans-unit id="43">
-        <source>label.status</source>
-        <target>Situación</target>
-        
+        <source>error.remove_lotation_permission_denied</source>
+        <target>Você não tem permissão para remover a lotação da unidade %unidade%</target>
       </trans-unit>
       <trans-unit id="44">
-        <source>MM/DD/YYYY hh:mm:ss</source>
-        <target>DD/MM/YYYY hh:mm:ss</target>
-        
+        <source>error.permission_denied</source>
+        <target>Permissão negada</target>
       </trans-unit>
-      <trans-unit id="49">
-        <source>modal.search.button.submit</source>
-        <target>Consultar</target>
-        
-      </trans-unit>
-      <trans-unit id="50">
-        <source>server.datetime</source>
-        <target>Fecha y hora en el servidor</target>
-        
-      </trans-unit>
-      <trans-unit id="51">
-        <source>error.invalid_service</source>
-        <target>Servicio inválido</target>
-        
+      <trans-unit id="45">
+        <source>error.more_than_one_lotation</source>
+        <target>Não pode ter mais de uma lotação por unidade</target>
       </trans-unit>
     </body>
   </file>
