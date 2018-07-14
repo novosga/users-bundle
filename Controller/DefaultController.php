@@ -20,8 +20,7 @@ use Novosga\Entity\Usuario as Entity;
 use Novosga\Http\Envelope;
 use Novosga\UsersBundle\Form\LotacaoType;
 use Novosga\UsersBundle\Form\UsuarioType as EntityType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,8 +39,7 @@ class DefaultController extends Controller
      * @param Request $request
      * @return Response
      *
-     * @Route("/", name="novosga_users_index")
-     * @Method("GET")
+     * @Route("/", name="novosga_users_index", methods={"GET"})
      */
     public function index(Request $request)
     {
@@ -131,9 +129,8 @@ class DefaultController extends Controller
      * @param int $id
      * @return Response
      *
-     * @Route("/new", name="novosga_users_new")
-     * @Route("/{id}/edit", name="novosga_users_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="novosga_users_new", methods={"GET", "POST"})
+     * @Route("/{id}/edit", name="novosga_users_edit", methods={"GET", "POST"})
      */
     public function form(Request $request, TranslatorInterface $translator, Entity $entity = null)
     {
@@ -146,8 +143,9 @@ class DefaultController extends Controller
         $unidades    = $em->getRepository(Unidade::class)->findByUsuario($currentUser);
         $isAdmin     = $currentUser->isAdmin();
         
-        $form = $this->createForm(EntityType::class, $entity);
-        $form->handleRequest($request);
+        $form = $this
+            ->createForm(EntityType::class, $entity)
+            ->handleRequest($request);
         
         if (!$isAdmin) {
             $lotacoes = $entity->getLotacoes()->toArray();
@@ -298,7 +296,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/novalotacao")
+     * @Route("/novalotacao", methods={"GET"})
      */
     public function novaLotacao(Request $request)
     {
@@ -320,7 +318,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/perfis/{id}")
+     * @Route("/perfis/{id}", methods={"GET"})
      */
     public function perfis(Request $request, Perfil $perfil)
     {
@@ -331,18 +329,18 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/unidades")
+     * @Route("/unidades", methods={"GET"})
      */
     public function unidades(Request $request)
     {
         $envelope = new Envelope();
         $user = $this->getUser();
         
-        $unidades = $this->getDoctrine()
-                        ->getManager()
-                        ->getRepository(Unidade::class)
-                        ->findByUsuario($user)
-                ;
+        $unidades = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository(Unidade::class)
+            ->findByUsuario($user);
         
         $envelope->setData($unidades);
 
@@ -350,13 +348,13 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/password/{id}", name="novosga_users_password")
-     * @Method("POST")
+     * @Route("/password/{id}", name="novosga_users_password", methods={"POST"})
      */
     public function password(Request $request, Entity $user)
     {
-        $form = $this->createForm(\Novosga\UsersBundle\Form\ChangePasswordType::class);
-        $form->handleRequest($request);
+        $form = $this
+            ->createForm(\Novosga\UsersBundle\Form\ChangePasswordType::class)
+            ->handleRequest($request);
         
         $response = [];
         
