@@ -147,7 +147,7 @@ class DefaultController extends Controller
             ->createForm(EntityType::class, $entity)
             ->handleRequest($request);
         
-        if (!$isAdmin) {
+        if (!$isAdmin && $entity->getId()) {
             $lotacoes = $entity->getLotacoes()->toArray();
 
             $existe = false;
