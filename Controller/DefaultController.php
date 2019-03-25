@@ -25,6 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * UsuariosController.
@@ -34,6 +35,13 @@ use Symfony\Component\Translation\TranslatorInterface;
 class DefaultController extends AbstractController
 {
     const DOMAIN = 'NovosgaUsersBundle';
+
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
     
     /**
      * @param Request $request
@@ -248,7 +256,7 @@ class DefaultController extends AbstractController
                     $entity->setAlgorithm('bcrypt');
                     $entity->setSalt(null);
 
-                    $encoded = $this->encodePassword(
+                    $encoded = $this->passwordEncoder->encodePassword(
                         $entity,
                         $form->get('senha')->getData()
                     );
@@ -359,7 +367,7 @@ class DefaultController extends AbstractController
         $response = [];
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $encoded = $this->encodePassword(
+            $encoded = $this->passwordEncoder->encodePassword(
                 $user,
                 $form->get('senha')->getData()
             );
@@ -383,13 +391,5 @@ class DefaultController extends AbstractController
         $envelope->setData($response);
         
         return $this->json($envelope);
-    }
-    
-    protected function encodePassword(Usuario $user, $password)
-    {
-        $encoder = $this->container->get('security.password_encoder');
-        $encoded = $encoder->encodePassword($user, $password);
-        
-        return $encoded;
     }
 }
