@@ -51,8 +51,7 @@ class DefaultController extends AbstractController
      */
     public function index(Request $request)
     {
-        $search = $request->get('q');
-        
+        $search  = $request->get('q');
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
        
@@ -152,7 +151,9 @@ class DefaultController extends AbstractController
         $isAdmin     = $currentUser->isAdmin();
         
         $form = $this
-            ->createForm(EntityType::class, $entity)
+            ->createForm(EntityType::class, $entity, [
+                'admin' => $isAdmin,
+            ])
             ->handleRequest($request);
         
         if (!$isAdmin && $entity->getId()) {

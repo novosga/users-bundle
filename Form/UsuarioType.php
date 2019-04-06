@@ -36,7 +36,8 @@ class UsuarioType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entity = $options['data'];
+        $entity  = $options['data'];
+        $isAdmin = $options['admin'];
         
         $builder
             ->add('login', TextType::class, [
@@ -80,8 +81,15 @@ class UsuarioType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'translation_domain' => 'NovosgaUsersBundle',
-            ])
-        ;
+            ]);
+
+        if ($isAdmin) {
+            $builder->add('admin', CheckboxType::class, [
+                'required' => false,
+                'label' => 'form.user.admin',
+                'translation_domain' => 'NovosgaUsersBundle',
+            ]);
+        }
         
         if ($entity->getId()) {
             $builder->add('ativo', CheckboxType::class, [
@@ -136,6 +144,7 @@ class UsuarioType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => Usuario::class
-            ]);
+            ])
+            ->setRequired('admin');
     }
 }

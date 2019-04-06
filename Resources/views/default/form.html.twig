@@ -24,7 +24,17 @@
 
                     <p class="text-secondary">{{ 'section.general.subtitle'|trans }}</p>
 
-                    {{ form_row(form.login) }}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            {{ form_row(form.login) }}
+                        </div>
+                        {% if entity.id %}
+                            <div class="col-sm-8">
+                                <label>&nbsp;</label>
+                                {{ form_row(form.ativo) }}
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <div class="row">
                         <div class="col-sm-4">
@@ -37,17 +47,21 @@
 
                     {{ form_row(form.email) }}
 
-                    {% if entity.id %}
+                    {% if entity.id or form.admin is defined %}
                         <div class="row">
-                            <div class="col-6">
-                                {{ form_row(form.ativo) }}
-                            </div>
-                            <div class="col-6 text-right">
-                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-senha">
-                                    <i class="fa fa-lock"></i>
-                                    {{ 'button.change_password'|trans }}
-                                </button>
-                            </div>
+                            {% if form.admin is defined %}
+                                <div class="col-6">
+                                    {{ form_row(form.admin) }}
+                                </div>
+                            {% endif %}
+                            {% if entity.id %}
+                                <div class="col-6 text-right {% if not form.admin is defined %}offset-6{% endif %}">
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-senha">
+                                        <i class="fa fa-lock"></i>
+                                        {{ 'button.change_password'|trans }}
+                                    </button>
+                                </div>
+                            {% endif %}
                         </div>
                     {% endif %}
 

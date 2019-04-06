@@ -51,6 +51,11 @@
         <target>Activo</target>
         
       </trans-unit>
+      <trans-unit id="9-2">
+        <source>form.user.admin</source>
+        <target>Administrador?</target>
+        
+      </trans-unit>
       <trans-unit id="10">
         <source>form.user.password</source>
         <target>Contraseña</target>
