@@ -38,12 +38,14 @@ class LotacaoType extends AbstractType
                 'query_builder' => function (EntityRepository $er) use ($usuario, $ignore) {
                     $qb = $er
                         ->createQueryBuilder('e')
+                        ->where('e.deletedAt IS NULL')
                         ->orderBy('e.nome', 'ASC');
                             
                     if (!$usuario->isAdmin()) {
                         $qb
                             ->join(Lotacao::class, 'l', 'WITH', 'l.unidade = e')
-                            ->where('l.usuario = :usuario')
+                            ->andWhere('l.usuario = :usuario')
+                            ->andWhere('e.deletedAt IS NULL')
                             ->setParameter('usuario', $usuario);
                     }
                     
@@ -62,8 +64,9 @@ class LotacaoType extends AbstractType
                 'class' => Perfil::class,
                 'placeholder' => '',
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('e')
-                            ->orderBy('e.nome', 'ASC');
+                    return $er
+                        ->createQueryBuilder('e')
+                        ->orderBy('e.nome', 'ASC');
                 },
                 'label' => 'form.lotacao.perfil',
                 'translation_domain' => 'NovosgaUsersBundle',
