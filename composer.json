@@ -1,18 +1,18 @@
 {
     "name": "novosga/users-bundle",
     "license": "MIT",
-    "type": "novosga-module",
+    "type": "symfony-bundle",
     "autoload": {
         "psr-4": { "Novosga\\UsersBundle\\": "" }
     },
     "require": {
         "php": "^7.1.3",
-        "novosga/core": "^2.1",
+        "novosga/core": "^3.0",
         "pagerfanta/pagerfanta": "^1.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "3.0-dev"
         }
     }
 }

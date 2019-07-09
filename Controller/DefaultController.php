@@ -15,8 +15,7 @@ use Exception;
 use Novosga\Entity\Lotacao;
 use Novosga\Entity\Perfil;
 use Novosga\Entity\Unidade;
-use Novosga\Entity\Usuario;
-use Novosga\Entity\Usuario as Entity;
+use Novosga\Entity\UsuarioInterface as Entity;
 use Novosga\Http\Envelope;
 use Novosga\UsersBundle\Form\LotacaoType;
 use Novosga\UsersBundle\Form\UsuarioType as EntityType;
@@ -26,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Novosga\Entity\PerfilInterface;
 
 /**
  * UsuariosController.
@@ -329,7 +329,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/perfis/{id}", methods={"GET"})
      */
-    public function perfis(Request $request, Perfil $perfil)
+    public function perfis(Request $request, PerfilInterface $perfil)
     {
         $envelope = new Envelope();
         $envelope->setData($perfil);
