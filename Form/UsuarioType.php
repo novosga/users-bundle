@@ -51,7 +51,6 @@ class UsuarioType extends AbstractType
                     new Regex("/^[a-zA-Z0-9\.]+$/"),
                 ],
                 'label' => 'form.user.username',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('nome', TextType::class, [
                 'constraints' => [
@@ -59,7 +58,6 @@ class UsuarioType extends AbstractType
                     new Length([ 'min' => 3, 'max' => 20 ]),
                 ],
                 'label' => 'form.user.name',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('email', EmailType::class, [
                 'required' => false,
@@ -67,7 +65,6 @@ class UsuarioType extends AbstractType
                     new Email(),
                 ],
                 'label' => 'form.user.email',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('sobrenome', TextType::class, [
                 'constraints' => [
@@ -75,19 +72,16 @@ class UsuarioType extends AbstractType
                     new Length([ 'max' => 100 ]),
                 ],
                 'label' => 'form.user.lastname',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('lotacoesRemovidas', HiddenType::class, [
                 'mapped' => false,
                 'required' => false,
-                'translation_domain' => 'NovosgaUsersBundle',
             ]);
 
         if ($isAdmin) {
             $builder->add('admin', CheckboxType::class, [
                 'required' => false,
                 'label' => 'form.user.admin',
-                'translation_domain' => 'NovosgaUsersBundle',
             ]);
         }
         
@@ -98,7 +92,6 @@ class UsuarioType extends AbstractType
                     new NotNull(),
                 ],
                 'label' => 'form.user.active',
-                'translation_domain' => 'NovosgaUsersBundle',
             ]);
         } else {
             $builder
@@ -109,7 +102,6 @@ class UsuarioType extends AbstractType
                         new Length([ 'min' => 6 ]),
                     ],
                     'label' => 'form.user.password',
-                    'translation_domain' => 'NovosgaUsersBundle',
                 ])
                 ->add('confirmacaoSenha', PasswordType::class, [
                     'mapped' => false,
@@ -130,7 +122,6 @@ class UsuarioType extends AbstractType
                         }),
                     ],
                     'label' => 'form.user.password_confirm',
-                    'translation_domain' => 'NovosgaUsersBundle',
                 ]);
         }
     }
@@ -143,7 +134,8 @@ class UsuarioType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => Usuario::class
+                'data_class' => Usuario::class,
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->setRequired('admin');
     }

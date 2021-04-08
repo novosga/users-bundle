@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityRepository;
 use Novosga\Entity\Perfil;
 use Novosga\Entity\Lotacao;
 use Novosga\Entity\Unidade;
+use Novosga\Entity\Usuario;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -58,7 +59,6 @@ class LotacaoType extends AbstractType
                     return $qb;
                 },
                 'label' => 'form.lotacao.unidade',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('perfil', EntityType::class, [
                 'class' => Perfil::class,
@@ -69,7 +69,6 @@ class LotacaoType extends AbstractType
                         ->orderBy('e.nome', 'ASC');
                 },
                 'label' => 'form.lotacao.perfil',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
         ;
     }
@@ -82,9 +81,10 @@ class LotacaoType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => Lotacao::class
+                'data_class' => Lotacao::class,
+                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->setRequired(['usuario', 'ignore'])
-            ->setAllowedTypes('usuario', [\Novosga\Entity\Usuario::class]);
+            ->setAllowedTypes('usuario', [ Usuario::class ]);
     }
 }

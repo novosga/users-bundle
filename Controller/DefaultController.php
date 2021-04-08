@@ -279,7 +279,7 @@ class DefaultController extends AbstractController
                     $em->getRepository(Entity::class)->updateUnidade($entity, $lotacao->getUnidade());
                 }
 
-                $this->addFlash('success', $translator->trans('label.add_sucess', [], self::DOMAIN));
+                $this->addFlash('success', $translator->trans('label.add_success', [], self::DOMAIN));
                 
                 return $this->redirectToRoute('novosga_users_edit', [ 'id' => $entity->getId() ]);
             } catch (Exception $e) {

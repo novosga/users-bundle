@@ -14,6 +14,7 @@ namespace Novosga\UsersBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -35,7 +36,6 @@ class ChangePasswordType extends AbstractType
                     new Length([ 'min' => 6 ]),
                 ],
                 'label' => 'form.user.password',
-                'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->add('confirmacaoSenha', PasswordType::class, [
                 'mapped' => false,
@@ -56,8 +56,17 @@ class ChangePasswordType extends AbstractType
                     }),
                 ],
                 'label' => 'form.user.password_confirm',
-                'translation_domain' => 'NovosgaUsersBundle',
             ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'translation_domain' => 'NovosgaUsersBundle',
+        ]);
     }
     
     public function getBlockPrefix()
