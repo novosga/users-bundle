@@ -7,12 +7,12 @@
     },
     "require": {
         "php": ">=7.2.5",
-        "novosga/core": "^2.1",
+        "novosga/core": "^2.2",
         "pagerfanta/pagerfanta": "^1.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "2.2-dev"
         }
     }
 }
