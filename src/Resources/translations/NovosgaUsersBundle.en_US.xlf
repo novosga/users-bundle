@@ -1,44 +1,44 @@
 <?xml version="1.0" ?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="es-AR">
+  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="en-US">
     <body>
       <trans-unit id="0">
         <source>module.name</source>
-        <target>Usuarios</target>
+        <target>Users</target>
         
       </trans-unit>
       <trans-unit id="1">
         <source>title</source>
-        <target>Usuarios</target>
+        <target>Users</target>
         
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Administre los usuarios de la unidad actual</target>
+        <target>Manage users of the current drive</target>
         
       </trans-unit>
       <trans-unit id="3">
         <source>form.lotacao.unidade</source>
-        <target>Unidad</target>
+        <target>Section</target>
         
       </trans-unit>
       <trans-unit id="4">
         <source>form.lotacao.perfil</source>
-        <target>Perfil</target>
+        <target>Profile</target>
         
       </trans-unit>
       <trans-unit id="5">
-        <source>form.user.username</source>
-        <target>Usuario</target>
+        <source>form.user.userIdentifier</source>
+        <target>User name</target>
         
       </trans-unit>
       <trans-unit id="6">
         <source>form.user.name</source>
-        <target>Nombre</target>
+        <target>Name</target>
         
       </trans-unit>
       <trans-unit id="7">
         <source>form.user.lastname</source>
-        <target>Apellido</target>
+        <target>Lastname</target>
         
       </trans-unit>
       <trans-unit id="8">
@@ -48,27 +48,27 @@
       </trans-unit>
       <trans-unit id="9">
         <source>form.user.active</source>
-        <target>Activo</target>
+        <target>Enabled</target>
         
       </trans-unit>
       <trans-unit id="9-2">
         <source>form.user.admin</source>
-        <target>Administrador?</target>
+        <target>Is administrator?</target>
         
       </trans-unit>
       <trans-unit id="10">
         <source>form.user.password</source>
-        <target>Turno</target>
+        <target>Ticket</target>
         
       </trans-unit>
       <trans-unit id="11">
         <source>form.user.password_confirm</source>
-        <target>Confirmación de contraseña</target>
+        <target>Password confirmation</target>
         
       </trans-unit>
       <trans-unit id="12">
         <source>error.password_confirm</source>
-        <target>La contraseña y la confirmación de la misma no coinciden.</target>
+        <target>Password and password confirmation do not match.</target>
         
       </trans-unit>
       <trans-unit id="13">
@@ -78,152 +78,147 @@
       </trans-unit>
       <trans-unit id="14">
         <source>section.general.subtitle</source>
-        <target>Datos básicos del usuario.</target>
+        <target>Basic user information</target>
         
       </trans-unit>
       <trans-unit id="15">
         <source>section.lotation.title</source>
-        <target>Dotaciones</target>
+        <target>Loans</target>
         
       </trans-unit>
       <trans-unit id="16">
         <source>section.lotation.subtitle</source>
-        <target>La dotación es utilizada para definir el perfil de acceso del usuario a las unidades.</target>
+        <target>Capacity is used to define the user access profile in the units.</target>
         
       </trans-unit>
       <trans-unit id="17">
         <source>label.unity</source>
-        <target>Unidad</target>
+        <target>Section</target>
         
       </trans-unit>
       <trans-unit id="18">
         <source>label.role</source>
-        <target>Perfil</target>
+        <target>Profile</target>
         
       </trans-unit>
       <trans-unit id="19">
         <source>button.add</source>
-        <target>Agregar</target>
+        <target>Add</target>
         
       </trans-unit>
       <trans-unit id="20">
         <source>button.save</source>
-        <target>Guardar</target>
+        <target>Save</target>
         
       </trans-unit>
       <trans-unit id="21">
         <source>button.back</source>
-        <target>Volver</target>
+        <target>Back</target>
         
       </trans-unit>
       <trans-unit id="22">
         <source>button.close</source>
-        <target>Cerrar</target>
+        <target>Close</target>
         
       </trans-unit>
       <trans-unit id="23">
         <source>button.change</source>
-        <target>Modificar</target>
+        <target>Change</target>
         
       </trans-unit>
       <trans-unit id="24">
         <source>button.new_user</source>
-        <target>Nuevo Usuario</target>
+        <target>new user</target>
         
       </trans-unit>
       <trans-unit id="25">
         <source>button.change_password</source>
-        <target>Modificar contraseña</target>
+        <target>Change password</target>
         
       </trans-unit>
       <trans-unit id="26">
         <source>button.view_permissions</source>
-        <target>Ver permisos</target>
+        <target>View Permissions</target>
         
       </trans-unit>
       <trans-unit id="27">
         <source>button.remove</source>
-        <target>Suprimir</target>
+        <target>Remove</target>
         
       </trans-unit>
       <trans-unit id="28">
         <source>label.lotation</source>
-        <target>Dotación</target>
+        <target>Stocking</target>
         
       </trans-unit>
       <trans-unit id="29">
         <source>label.name</source>
-        <target>Nombre</target>
+        <target>Name</target>
         
       </trans-unit>
       <trans-unit id="30">
         <source>label.description</source>
-        <target>Descripción</target>
+        <target>Description</target>
         
       </trans-unit>
       <trans-unit id="31">
         <source>label.permissions</source>
-        <target>Permisos</target>
+        <target>Permission </target>
         
       </trans-unit>
       <trans-unit id="32">
         <source>label.status</source>
-        <target>Situación</target>
+        <target>Status</target>
         
       </trans-unit>
       <trans-unit id="33">
         <source>label.enabled</source>
-        <target>Activo</target>
+        <target>Enabled</target>
         
       </trans-unit>
       <trans-unit id="34">
         <source>label.disabled</source>
-        <target>Inactivo</target>
+        <target>Disabled </target>
         
       </trans-unit>
       <trans-unit id="35">
         <source>label.search</source>
-        <target>Buscar</target>
+        <target>Search</target>
         
       </trans-unit>
       <trans-unit id="36">
         <source>label.username</source>
-        <target>Usuario</target>
+        <target>User name</target>
         
       </trans-unit>
       <trans-unit id="37">
         <source>label.change_password</source>
-        <target>Modificar contraseña</target>
+        <target>Change password</target>
         
       </trans-unit>
       <trans-unit id="40">
         <source>label.add_success</source>
-        <target>Usuario agregado con éxito</target>
         
       </trans-unit>
       <trans-unit id="41">
         <source>error.no_lotation</source>
-        <target>Necesita pertenecer a por lo menos un Servicio</target>
         
       </trans-unit>
       <trans-unit id="42">
         <source>error.add_lotation_permission_denied</source>
-        <target>Usted no tiene permiso para agregar un cargo a la Unidad %uunidade%</target>
         
       </trans-unit>
       <trans-unit id="43">
         <source>error.remove_lotation_permission_denied</source>
-        <target>Usted no tiene permiso para eliminar un cargo a la Unidad %unidade%</target>
         
       </trans-unit>
       <trans-unit id="44">
         <source>error.permission_denied</source>
-        <target>Permiso denegado</target>
+        <target>Permission denied</target>
         
       </trans-unit>
       <trans-unit id="45">
         <source>error.more_than_one_lotation</source>
-        <target>No puede tener más de un cargo por unidad</target>
         
       </trans-unit>
     </body>

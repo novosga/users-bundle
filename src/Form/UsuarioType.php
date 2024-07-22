@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Novo SGA project.
  *
@@ -11,7 +13,7 @@
 
 namespace Novosga\UsersBundle\Form;
 
-use Novosga\Entity\Usuario;
+use App\Entity\Usuario;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -50,7 +52,7 @@ class UsuarioType extends AbstractType
                     new Length([ 'min' => 3, 'max' => 30 ]),
                     new Regex("/^[a-zA-Z0-9\.]+$/"),
                 ],
-                'label' => 'form.user.username',
+                'label' => 'form.user.userIdentifier',
             ])
             ->add('nome', TextType::class, [
                 'constraints' => [

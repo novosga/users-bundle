@@ -17,7 +17,7 @@
                     url: App.url('/novosga.users/perfis/') + id,
                     success: function (response) {
                         self.perfil = response.data;
-                        $('#dialog-perfil').modal('show');
+                        new bootstrap.Modal('#dialog-perfil').show();
                     }
                 });
             },

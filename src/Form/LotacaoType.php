@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Novo SGA project.
  *
@@ -12,10 +14,10 @@
 namespace Novosga\UsersBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
-use Novosga\Entity\Perfil;
-use Novosga\Entity\Lotacao;
-use Novosga\Entity\Unidade;
-use Novosga\Entity\Usuario;
+use App\Entity\Perfil;
+use App\Entity\Lotacao;
+use App\Entity\Unidade;
+use App\Entity\Usuario;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

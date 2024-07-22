@@ -1,23 +1,24 @@
 <?xml version="1.0" ?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="pt-PT">
+  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="es">
     <body>
       <trans-unit id="0">
         <source>module.name</source>
-        <target>Utilizadores</target>
+        <target>Usuarios</target>
         
       </trans-unit>
       <trans-unit id="1">
         <source>title</source>
-        <target>Utilizadores</target>
+        <target>Usuarios</target>
         
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
+        <target>Administrar usuarios de la unidad actual</target>
         
       </trans-unit>
       <trans-unit id="3">
         <source>form.lotacao.unidade</source>
-        <target>Unidade</target>
+        <target>Unidad</target>
         
       </trans-unit>
       <trans-unit id="4">
@@ -26,68 +27,73 @@
         
       </trans-unit>
       <trans-unit id="5">
-        <source>form.user.username</source>
-        <target>Nome de utilizador</target>
+        <source>form.user.userIdentifier</source>
+        <target>Nombre de usuario</target>
         
       </trans-unit>
       <trans-unit id="6">
         <source>form.user.name</source>
-        <target>Nome</target>
+        <target>Nombre</target>
         
       </trans-unit>
       <trans-unit id="7">
         <source>form.user.lastname</source>
-        <target>Apelido</target>
+        <target>Apellido</target>
         
       </trans-unit>
       <trans-unit id="8">
         <source>form.user.email</source>
+        <target>Correo Electronico</target>
         
       </trans-unit>
       <trans-unit id="9">
         <source>form.user.active</source>
-        <target>Ativo</target>
+        <target>Activo</target>
         
       </trans-unit>
       <trans-unit id="9-2">
         <source>form.user.admin</source>
-        <target>É administrador?</target>
+        <target>Administrador?</target>
         
       </trans-unit>
       <trans-unit id="10">
         <source>form.user.password</source>
-        <target>Senha</target>
+        <target>Contraseña</target>
         
       </trans-unit>
       <trans-unit id="11">
         <source>form.user.password_confirm</source>
+        <target>Confirmación de la contraseña</target>
         
       </trans-unit>
       <trans-unit id="12">
         <source>error.password_confirm</source>
+        <target>La contraseña y la confirmación de la contraseña no coiciden.</target>
         
       </trans-unit>
       <trans-unit id="13">
         <source>section.general.title</source>
-        <target>Geral</target>
+        <target>General</target>
         
       </trans-unit>
       <trans-unit id="14">
         <source>section.general.subtitle</source>
+        <target>Datos básicos del usuario.</target>
         
       </trans-unit>
       <trans-unit id="15">
         <source>section.lotation.title</source>
-        <target>Alocações</target>
+        <target>Dotaciones</target>
         
       </trans-unit>
       <trans-unit id="16">
         <source>section.lotation.subtitle</source>
+        <target>La asignación se utiliza para definir el perfil de acceso del usuario en las unidades.</target>
         
       </trans-unit>
       <trans-unit id="17">
         <source>label.unity</source>
-        <target>Unidade</target>
+        <target>Unidad</target>
         
       </trans-unit>
       <trans-unit id="18">
@@ -97,7 +103,7 @@
       </trans-unit>
       <trans-unit id="19">
         <source>button.add</source>
-        <target>Adicionar</target>
+        <target>Agregar</target>
         
       </trans-unit>
       <trans-unit id="20">
@@ -107,7 +113,7 @@
       </trans-unit>
       <trans-unit id="21">
         <source>button.back</source>
-        <target>Voltar</target>
+        <target>Volver</target>
         
       </trans-unit>
       <trans-unit id="22">
@@ -117,76 +123,77 @@
       </trans-unit>
       <trans-unit id="23">
         <source>button.change</source>
-        <target>Alterar</target>
+        <target>Modificar</target>
         
       </trans-unit>
       <trans-unit id="24">
         <source>button.new_user</source>
+        <target>Nuevo usuario</target>
         
       </trans-unit>
       <trans-unit id="25">
         <source>button.change_password</source>
-        <target>Alterar senha</target>
+        <target>Modificar contraseña</target>
         
       </trans-unit>
       <trans-unit id="26">
         <source>button.view_permissions</source>
-        <target>Ver permissões</target>
+        <target>Ver permisos</target>
         
       </trans-unit>
       <trans-unit id="27">
         <source>button.remove</source>
-        <target>Eliminar</target>
+        <target>Suprimir</target>
         
       </trans-unit>
       <trans-unit id="28">
         <source>label.lotation</source>
-        <target>Alocação</target>
+        <target>Dotación</target>
         
       </trans-unit>
       <trans-unit id="29">
         <source>label.name</source>
-        <target>Nome</target>
+        <target>Nombre</target>
         
       </trans-unit>
       <trans-unit id="30">
         <source>label.description</source>
-        <target>Descrição</target>
+        <target>Descripción</target>
         
       </trans-unit>
       <trans-unit id="31">
         <source>label.permissions</source>
-        <target>Permissões</target>
+        <target>Perisos</target>
         
       </trans-unit>
       <trans-unit id="32">
         <source>label.status</source>
-        <target>Situação</target>
+        <target>Situación</target>
         
       </trans-unit>
       <trans-unit id="33">
         <source>label.enabled</source>
-        <target>Ativo</target>
+        <target>Activo</target>
         
       </trans-unit>
       <trans-unit id="34">
         <source>label.disabled</source>
-        <target>Inativo</target>
+        <target>Inactivo</target>
         
       </trans-unit>
       <trans-unit id="35">
         <source>label.search</source>
-        <target>Pesquisar</target>
+        <target>Buscar</target>
         
       </trans-unit>
       <trans-unit id="36">
         <source>label.username</source>
-        <target>Nome de utilizador</target>
+        <target>Nombre de usuario</target>
         
       </trans-unit>
       <trans-unit id="37">
         <source>label.change_password</source>
-        <target>Alterar senha</target>
+        <target>Modificar contraseña</target>
         
       </trans-unit>
       <trans-unit id="40">
@@ -207,7 +214,7 @@
       </trans-unit>
       <trans-unit id="44">
         <source>error.permission_denied</source>
-        <target>Permissão negada</target>
+        <target>Permiso denegado</target>
         
       </trans-unit>
       <trans-unit id="45">

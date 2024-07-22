@@ -56,7 +56,7 @@
                             {% endif %}
                             {% if entity.id %}
                                 <div class="col-6 text-right {% if not form.admin is defined %}offset-6{% endif %}">
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-senha">
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-target="#dialog-senha">
                                         <i class="fa fa-lock"></i>
                                         {{ 'button.change_password'|trans }}
                                     </button>
@@ -116,7 +116,7 @@
                                 <td colspan="2">
                                 </td>
                                 <td class="text-right">
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#dialog-lotacao">
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-target="#dialog-lotacao">
                                         <i class="fa fa-plus"></i>&nbsp;
                                         {{ 'button.add'|trans }}
                                     </button>
@@ -130,7 +130,7 @@
                 </fieldset>
             </div>
         </div>
-        
+
         <hr>
 
         <div class="buttons">
@@ -148,19 +148,19 @@
 
     
     {# lotação #}
-    <div id="dialog-lotacao" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
+    <div id="dialog-lotacao" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form id="lotacao-form">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ 'label.lotation'|trans}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- dynamic content loaded by ajax -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             {{ 'button.close'|trans }}
                         </button>
                         <button type="submit" class="btn btn-primary">
@@ -178,7 +178,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ 'label.role'|trans }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" v-if="perfil">
                     <table class="table table-bordered">
@@ -230,15 +230,15 @@
                     {{ form_start(passwordForm, { attr: { 'v-on:submit.prevent': 'alterarSenha' } }) }}
                         <div class="modal-header">
                             <h5 class="modal-title">{{ 'label.change_password'|trans }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div class="mb-3">
                                 {{ form_label(passwordForm.senha) }}
                                 {{ form_widget(passwordForm.senha, { attr: { 'v-bind:class': "{'is-invalid': errors.senha}" } }) }}
                                 <div v-text="errors.senha" v-bind:class="{'invalid-feedback': errors.senha}"></div>
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 {{ form_label(passwordForm.confirmacaoSenha) }}
                                 {{ form_widget(passwordForm.confirmacaoSenha, { attr: { 'v-bind:class': "{'is-invalid': errors.confirmacaoSenha}" } }) }}
                                 <div v-text="errors.confirmacaoSenha" v-bind:class="{'invalid-feedback': errors.confirmacaoSenha}"></div>
