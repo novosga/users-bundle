@@ -13,80 +13,64 @@ declare(strict_types=1);
 
 namespace Novosga\UsersBundle\Form;
 
-use Doctrine\ORM\EntityRepository;
-use App\Entity\Perfil;
-use App\Entity\Lotacao;
-use App\Entity\Unidade;
-use App\Entity\Usuario;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Novosga\Entity\LotacaoInterface;
+use Novosga\Entity\PerfilInterface;
+use Novosga\Entity\UnidadeInterface;
+use Novosga\Entity\UsuarioInterface;
+use Novosga\Repository\PerfilRepositoryInterface;
+use Novosga\Repository\UnidadeRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LotacaoType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
+    public function __construct(
+        private readonly UnidadeRepositoryInterface $unidadeRepository,
+        private readonly PerfilRepositoryInterface $perfilRepository,
+    ) {
+    }
+
+    /** {@inheritDoc} */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $ignore  = $options['ignore'];
+        $ignoreList = (array) $options['ignore'];
         $usuario = $options['usuario'];
-        
+        $unidadesUsuario = $this->unidadeRepository->findByUsuario($usuario);
+        $unidadesDisponiveis = array_values(array_filter(
+            $unidadesUsuario,
+            fn (UnidadeInterface $unidade) => !in_array($unidade->getId(), $ignoreList),
+        ));
+
         $builder
-            ->add('unidade', EntityType::class, [
-                'class' => Unidade::class,
+            ->add('unidade', ChoiceType::class, [
                 'placeholder' => '',
-                'query_builder' => function (EntityRepository $er) use ($usuario, $ignore) {
-                    $qb = $er
-                        ->createQueryBuilder('e')
-                        ->where('e.deletedAt IS NULL')
-                        ->orderBy('e.nome', 'ASC');
-                            
-                    if (!$usuario->isAdmin()) {
-                        $qb
-                            ->join(Lotacao::class, 'l', 'WITH', 'l.unidade = e')
-                            ->andWhere('l.usuario = :usuario')
-                            ->andWhere('e.deletedAt IS NULL')
-                            ->setParameter('usuario', $usuario);
-                    }
-                    
-                    if (count($ignore)) {
-                        $qb
-                            ->andWhere('e.id NOT IN (:ignore)')
-                            ->setParameter('ignore', $ignore);
-                    }
-                    
-                    return $qb;
-                },
+                'choice_value' => fn (?UnidadeInterface $value) => $value?->getId(),
+                'choice_label' => fn (?UnidadeInterface $value) => $value?->getNome(),
+                'choices' => $unidadesDisponiveis,
                 'label' => 'form.lotacao.unidade',
             ])
-            ->add('perfil', EntityType::class, [
-                'class' => Perfil::class,
+            ->add('perfil', ChoiceType::class, [
                 'placeholder' => '',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er
-                        ->createQueryBuilder('e')
-                        ->orderBy('e.nome', 'ASC');
-                },
+                'choice_value' => fn (?PerfilInterface $value) => $value?->getId(),
+                'choice_label' => fn (?PerfilInterface $value) => $value?->getNome(),
+                'choices' => $this->perfilRepository->findAll(),
                 'label' => 'form.lotacao.perfil',
             ])
         ;
     }
-    
-    /**
-     *
-     * @param OptionsResolver $resolver
-     */
+
+    /** {@inheritDoc} */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'data_class' => Lotacao::class,
+                'data_class' => LotacaoInterface::class,
                 'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->setRequired(['usuario', 'ignore'])
-            ->setAllowedTypes('usuario', [ Usuario::class ]);
+            ->setAllowedTypes('ignore', [ 'array' ])
+            ->setAllowedTypes('usuario', [ UsuarioInterface::class ]);
     }
 }

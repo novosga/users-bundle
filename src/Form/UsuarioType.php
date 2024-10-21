@@ -13,34 +13,30 @@ declare(strict_types=1);
 
 namespace Novosga\UsersBundle\Form;
 
-use App\Entity\Usuario;
+use Novosga\Entity\UsuarioInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UsuarioType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
+    /** {@inheritDoc} */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entity  = $options['data'];
         $isAdmin = $options['admin'];
-        
+
         $builder
             ->add('login', TextType::class, [
                 'attr' => [
@@ -86,7 +82,7 @@ class UsuarioType extends AbstractType
                 'label' => 'form.user.admin',
             ]);
         }
-        
+
         if ($entity->getId()) {
             $builder->add('ativo', CheckboxType::class, [
                 'required' => false,
@@ -97,46 +93,29 @@ class UsuarioType extends AbstractType
             ]);
         } else {
             $builder
-                ->add('senha', PasswordType::class, [
+                ->add('senha', RepeatedType::class, [
                     'mapped' => false,
+                    'type' => PasswordType::class,
                     'constraints' => [
                         new NotNull(),
                         new Length([ 'min' => 6 ]),
                     ],
-                    'label' => 'form.user.password',
-                ])
-                ->add('confirmacaoSenha', PasswordType::class, [
-                    'mapped' => false,
-                    'constraints' => [
-                        new Length([ 'min' => 6 ]),
-                        new Callback(function ($object, ExecutionContextInterface $context, $payload) {
-                            $form        = $context->getRoot();
-                            $senha       = $form->get('senha');
-                            $confirmacao = $form->get('confirmacaoSenha');
-                            
-                            if ($senha->getData() !== $confirmacao->getData()) {
-                                $context
-                                    ->buildViolation('error.password_confirm')
-                                    ->setTranslationDomain('NovosgaUsersBundle')
-                                    ->atPath('confirmacaoSenha')
-                                    ->addViolation();
-                            }
-                        }),
+                    'first_options' => [
+                        'label' => 'form.user.password',
                     ],
-                    'label' => 'form.user.password_confirm',
+                    'second_options' => [
+                        'label' => 'form.user.password_confirm',
+                    ],
                 ]);
         }
     }
-    
-    /**
-     *
-     * @param OptionsResolver $resolver
-     */
+
+    /** {@inheritDoc} */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([
-                'data_class' => Usuario::class,
+                'data_class' => UsuarioInterface::class,
                 'translation_domain' => 'NovosgaUsersBundle',
             ])
             ->setRequired('admin');

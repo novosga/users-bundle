@@ -3,6 +3,7 @@
 {% trans_default_domain 'NovosgaUsersBundle' %}
 
 {% block body %}
+<div id="users-form">
     <h1>
         <i class="fa fa-users" aria-hidden="true"></i>
         {{ 'title'|trans }}
@@ -10,9 +11,9 @@
             {{ 'subtitle'|trans }}
         </small>
     </h1>
-        
+
     <hr>
-        
+
     {{ form_start(form) }}
 
         {% include 'flashMessages.html.twig' %}
@@ -55,8 +56,8 @@
                                 </div>
                             {% endif %}
                             {% if entity.id %}
-                                <div class="col-6 text-right {% if not form.admin is defined %}offset-6{% endif %}">
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-target="#dialog-senha">
+                                <div class="col-6 text-end {% if not form.admin is defined %}offset-6{% endif %}">
+                                    <button type="button" class="btn btn-secondary" @click="showSenhaModal">
                                         <i class="fa fa-lock"></i>
                                         {{ 'button.change_password'|trans }}
                                     </button>
@@ -66,9 +67,8 @@
                     {% endif %}
 
                     {% if not entity.id %}
-                        {{ form_row(form.senha) }}
-
-                        {{ form_row(form.confirmacaoSenha) }}
+                        {{ form_row(form.senha.first) }}
+                        {{ form_row(form.senha.second) }}
                     {% endif %}
                 </fieldset>
             </div>
@@ -92,15 +92,15 @@
                                     {% verbatim %}
                                         {{ lotacao.unidade.nome }}
                                     {% endverbatim %}
-                                    <input type="hidden" name="novasUnidades[]" v-bind:value="lotacao.unidade.id" v-if="lotacao.novo">
+                                    <input type="hidden" name="novasUnidades[]" :value="lotacao.unidade.id" v-if="lotacao.novo">
                                 </td>
                                 <td>
                                     {% verbatim %}
                                         {{ lotacao.perfil.nome }}
                                     {% endverbatim %}
-                                    <input type="hidden" name="novosPerfis[]" v-bind:value="lotacao.perfil.id" v-if="lotacao.novo">
+                                    <input type="hidden" name="novosPerfis[]" :value="lotacao.perfil.id" v-if="lotacao.novo">
                                 </td>
-                                <td class="text-right text-nowrap">
+                                <td class="text-end text-nowrap">
                                     <button type="button" title="{{ 'button.view_permissions'|trans }}" class="btn btn-secondary" v-on:click="viewPerfil(lotacao.perfil.id)">
                                         <i class="fa fa-eye"></i>
                                     </button>
@@ -115,8 +115,8 @@
                             <tr>
                                 <td colspan="2">
                                 </td>
-                                <td class="text-right">
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-target="#dialog-lotacao">
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-secondary" @click="showLotacaoModal">
                                         <i class="fa fa-plus"></i>&nbsp;
                                         {{ 'button.add'|trans }}
                                     </button>
@@ -126,7 +126,6 @@
                     </table>
                     
                     {{ form_row(form.lotacoesRemovidas, { attr: { 'v-model': 'idsLotacoesRemovidas' } }) }}
-                    
                 </fieldset>
             </div>
         </div>
@@ -143,15 +142,13 @@
                 {{ 'button.back'|trans }}
             </a>
         </div>
-
     {{ form_end(form) }}
 
-    
     {# lotação #}
-    <div id="dialog-lotacao" class="modal fade" tabindex="-1" role="dialog">
+    <div ref="lotacaoModal" id="dialog-lotacao" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form id="lotacao-form">
+                <form id="lotacao-form" @submit.prevent="handleLotacaoSubmit">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ 'label.lotation'|trans}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -171,9 +168,9 @@
             </div>
         </div>
     </div>
-                        
+
     {# permissoes #}
-    <div id="dialog-perfil" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div ref="perfilModal" id="dialog-perfil" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -224,7 +221,7 @@
 
     {# dialog mudar senha apenas para usuarios ja cadastrados #}
     {% if passwordForm %}
-        <div id="dialog-senha" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div ref="senhaModal" id="dialog-senha" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     {{ form_start(passwordForm, { attr: { 'v-on:submit.prevent': 'alterarSenha' } }) }}
@@ -235,13 +232,13 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 {{ form_label(passwordForm.senha) }}
-                                {{ form_widget(passwordForm.senha, { attr: { 'v-bind:class': "{'is-invalid': errors.senha}" } }) }}
-                                <div v-text="errors.senha" v-bind:class="{'invalid-feedback': errors.senha}"></div>
+                                {{ form_widget(passwordForm.senha, { attr: { ':class': "{'is-invalid': errors.senha}" } }) }}
+                                <div v-text="errors.senha" :class="{'invalid-feedback': errors.senha}"></div>
                             </div>
                             <div class="mb-3">
                                 {{ form_label(passwordForm.confirmacaoSenha) }}
-                                {{ form_widget(passwordForm.confirmacaoSenha, { attr: { 'v-bind:class': "{'is-invalid': errors.confirmacaoSenha}" } }) }}
-                                <div v-text="errors.confirmacaoSenha" v-bind:class="{'invalid-feedback': errors.confirmacaoSenha}"></div>
+                                {{ form_widget(passwordForm.confirmacaoSenha, { attr: { ':class': "{'is-invalid': errors.confirmacaoSenha}" } }) }}
+                                <div v-text="errors.confirmacaoSenha" :class="{'invalid-feedback': errors.confirmacaoSenha}"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -254,13 +251,14 @@
             </div>
         </div>
     {% endif %}
+</div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var unidades = [ {% for unidade in unidades %}{{ unidade.id }},{% endfor %} ];
-        var lotacoes = [ 
+        const unidades = [ {% for unidade in unidades %}{{ unidade.id }},{% endfor %} ];
+        const lotacoes = [ 
                 {%- for lotacao in entity.lotacoes -%}
                     {
                         id: {{ lotacao.id ? lotacao.id : 'null' }},
@@ -275,7 +273,7 @@
                     },
                 {%- endfor -%} 
             ];
-        var lotacoesRemovidas = [
+        const lotacoesRemovidas = [
                 {%- for lotacao in lotacoesRemovidas -%}
                     {
                         id: {{ lotacao.id }},

@@ -4,112 +4,95 @@
  */
 (function () {
     'use strict'
-    
-    var dialogPerfil = new Vue({
-        el: '#dialog-perfil',
+
+    new Vue({
+        el: '#users-form',
         data: {
-            perfil: null
-        },
-        methods: {
-            viewPerfil: function (id) {
-                var self = this;
-                App.ajax({
-                    url: App.url('/novosga.users/perfis/') + id,
-                    success: function (response) {
-                        self.perfil = response.data;
-                        new bootstrap.Modal('#dialog-perfil').show();
-                    }
-                });
-            },
-        }
-    });
-        
-    var lotacoesTable = new Vue({
-        el: '#lotacoes',
-        data: {
+            perfil: null,
+            lotacaoModal: null,
+            perfilModal: null,
+            senhaModal: null,
             lotacoes: lotacoes,
-            lotacoesRemovidas: lotacoesRemovidas
+            lotacoesRemovidas: lotacoesRemovidas,
+            errors: {},
         },
         computed: {
-            idsLotacoesRemovidas: function () {
-                return this.lotacoesRemovidas.map(function (lotacao) {
-                    return lotacao.id;
-                }).join(',');
+            idsLotacoesRemovidas() {
+                return this.lotacoesRemovidas.map((lotacao) => lotacao.id).join(',');
             }
         },
         methods: {
-            add: function (lotacao) {
+            viewPerfil(id) {
+                App.ajax({
+                    url: App.url('/novosga.users/perfis/') + id,
+                    success: (response) => {
+                        this.perfil = response.data;
+                        this.perfilModal.show();
+                    }
+                });
+            },
+            add(lotacao) {
                 lotacao.novo = true;
                 this.lotacoes.push(lotacao);
             },
-            remove: function (lotacao) {
+            remove(lotacao) {
                 this.lotacoes.splice(this.lotacoes.indexOf(lotacao), 1);
                 if (lotacao.id) {
                     this.lotacoesRemovidas.push(lotacao);
                 }
             },
-            viewPerfil: function (id) {
-                dialogPerfil.viewPerfil(id);
-            },
-        }
-    });
-    
-    new Vue({
-        el: '#dialog-senha',
-        data: {
-            errors: {}
-        },
-        methods: {
-            alterarSenha: function (e) {
-                var $elem = $(e.target), self = this;
-                
-                self.errors = {};
-                $.ajax({
-                    url: $elem.attr('action'),
-                    type: $elem.attr('method'),
-                    data: $elem.serialize(),
-                    success: function (response) {
-                        if (!response.data.error) {
-                            $elem.trigger('reset');
-                            $('#dialog-senha').modal('hide');
-                        } else {
-                            self.errors = response.data.errors ? response.data.errors : {};
-                        }
-                    },
+            async alterarSenha(e) {
+                this.errors = {};
+                const form = e.target
+                const resp = await fetch(form.action, {
+                    method: form.method || 'post',
+                    body: new FormData(form)
                 });
+                const result = await resp.json();
+                if (!result.data.error) {
+                    form.reset();
+                    this.senhaModal.hide();
+                } else {
+                    this.errors = result.data.errors || {};
+                }
+            },
+            handleLotacaoSubmit() {
+                const perfil = document.getElementById('lotacao_perfil');
+                const unidade = document.getElementById('lotacao_unidade');
+
+                if (perfil && unidade) {
+                    this.add({
+                        unidade: {
+                            id: unidade.value,
+                            nome: unidade.innerText,
+                        },
+                        perfil: {
+                            id: perfil.value,
+                            nome: perfil.innerText,
+                        }
+                    });
+                }
+
+                this.lotacaoModal.hide();
+            },
+            showSenhaModal() {
+                this.senhaModal.show();
+            },
+            async showLotacaoModal() {
+                const ids = this.lotacoes.map((lotacao) => lotacao.unidade.id);
+                const resp = await fetch(App.url('/novosga.users/novalotacao?ignore=') + ids.join(','));
+                const text = await resp.text();
+                this.$refs.lotacaoModal.querySelector('.modal-body').innerHTML = text;
+
+                this.lotacaoModal.show();
+            }
+        },
+        mounted() {
+            this.lotacaoModal = new bootstrap.Modal(this.$refs.lotacaoModal);
+            this.perfilModal = new bootstrap.Modal(this.$refs.perfilModal);
+            if (this.$refs.senhaModal) {
+                this.senhaModal = new bootstrap.Modal(this.$refs.senhaModal);
             }
         }
-    });
-    
-    $('#dialog-lotacao').on('show.bs.modal', function () {
-        var ids = lotacoesTable.lotacoes.map(function(lotacao) { 
-            return lotacao.unidade.id; 
-        });
-        
-        $(this)
-            .find('.modal-body')
-            .load(App.url('/novosga.users/novalotacao?ignore=') + ids.join(','));
-    });
-    
-    $('#lotacao-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        var perfil  = $('#lotacao_perfil :selected'),
-            unidade = $('#lotacao_unidade :selected');
-            
-        if (perfil.val() && unidade.val()) {
-            lotacoesTable.add({
-                unidade: {
-                    id: unidade.val(),
-                    nome: unidade.text(),
-                },
-                perfil: {
-                    id: perfil.val(),
-                    nome: perfil.text(),
-                }
-            });
-        }
-        
-        $('#dialog-lotacao').modal('hide');
     });
 })();

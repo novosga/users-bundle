@@ -24,10 +24,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ChangePasswordType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
+    /** {@inheritDoc} */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -44,8 +41,8 @@ class ChangePasswordType extends AbstractType
                 'constraints' => [
                     new Length([ 'min' => 6 ]),
                     new Callback(function ($object, ExecutionContextInterface $context, $payload) {
-                        $form        = $context->getRoot();
-                        $senha       = $form->get('senha');
+                        $form = $context->getRoot();
+                        $senha = $form->get('senha');
                         $confirmacao = $form->get('confirmacaoSenha');
 
                         if ($senha->getData() !== $confirmacao->getData()) {
@@ -61,16 +58,15 @@ class ChangePasswordType extends AbstractType
             ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritDoc} */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'translation_domain' => 'NovosgaUsersBundle',
         ]);
     }
-    
+
+    /** {@inheritDoc} */
     public function getBlockPrefix()
     {
         return '';

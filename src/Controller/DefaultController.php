@@ -55,7 +55,7 @@ class DefaultController extends AbstractController
         UsuarioRepositoryInterface $repository,
     ): Response {
         $search  = $request->get('q');
-        /** @var Usuario */
+        /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
@@ -188,6 +188,7 @@ class DefaultController extends AbstractController
     ): Response {
         /** @var UsuarioInterface */
         $currentUser = $this->getUser();
+        $unidade = $currentUser->getLotacao()->getUnidade();
         $unidades = $unidadeRepository->findByUsuario($currentUser);
         $isAdmin = $currentUser->isAdmin();
 
@@ -211,7 +212,7 @@ class DefaultController extends AbstractController
                 throw new Exception($error);
             }
         }
-        
+
         $lotacoesRemovidas = [];
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -226,7 +227,7 @@ class DefaultController extends AbstractController
                                     $error = $translator->trans('error.remove_lotation_permission_denied', [
                                         '%unidade%' => $lotacao->getUnidade(),
                                     ], NovosgaUsersBundle::getDomain());
-                                    
+
                                     throw new Exception($error);
                                 }
                                 $lotacoesRemovidas[] = $lotacao;
@@ -246,15 +247,16 @@ class DefaultController extends AbstractController
 
                         if ($unidade && $perfil) {
                             if (!$isAdmin && !in_array($unidade, $unidades)) {
-                                $error = $translator->trans('error.add_lotation_permission_denied', [
-                                    '%unidade%' => $lotacao->getUnidade(),
-                                ], NovosgaUsersBundle::getDomain());
-                                
+                                $error = $translator->trans(
+                                    'error.add_lotation_permission_denied',
+                                    [ '%unidade%' => $unidade ],
+                                    NovosgaUsersBundle::getDomain(),
+                                );
                                 throw new Exception($error);
                             }
-                            
+
                             $lotacao = null;
-                            
+
                             // tenta reaproveitar uma lotacao da mesma unidade
                             foreach ($lotacoesRemovidas as $l) {
                                 if ($l->getUnidade()->getId() === $unidade->getId()) {
@@ -264,9 +266,10 @@ class DefaultController extends AbstractController
                             }
 
                             if (!$lotacao) {
-                                $lotacao = $lotacaoService->build();
-                                $lotacao->setUnidade($unidade);
-                                $lotacao->setUsuario($entity);
+                                $lotacao = $lotacaoService
+                                    ->build()
+                                    ->setUnidade($unidade)
+                                    ->setUsuario($entity);
                             }
 
                             $lotacao->setPerfil($perfil);
@@ -283,7 +286,11 @@ class DefaultController extends AbstractController
                 $unidadesMap = [];
                 foreach ($entity->getLotacoes() as $lotacao) {
                     if (isset($unidadesMap[$lotacao->getUnidade()->getId()])) {
-                        throw new Exception($translator->trans('error.more_than_one_lotation', [], NovosgaUsersBundle::getDomain()));
+                        throw new Exception($translator->trans(
+                            'error.more_than_one_lotation',
+                            [],
+                            NovosgaUsersBundle::getDomain(),
+                        ));
                     }
                     $unidadesMap[$lotacao->getUnidade()->getId()] = true;
                 }
@@ -299,12 +306,12 @@ class DefaultController extends AbstractController
                     $entity
                         ->setSenha($encoded)
                         ->setAtivo(true)
-                        ->setAdmin(false);   
+                        ->setAdmin(false);
                 }
-                
+
                 $em->persist($entity);
                 $em->flush();
-                
+
                 if (!$isNew) {
                     $lotacoes = $entity->getLotacoes()->toArray();
                     $lotacao = end($lotacoes);
@@ -315,7 +322,11 @@ class DefaultController extends AbstractController
                     );
                 }
 
-                $this->addFlash('success', $translator->trans('label.add_success', [], NovosgaUsersBundle::getDomain()));
+                $this->addFlash('success', $translator->trans(
+                    'label.add_success',
+                    [],
+                    NovosgaUsersBundle::getDomain(),
+                ));
 
                 return $this->redirectToRoute('novosga_users_edit', [ 'id' => $entity->getId() ]);
             } catch (Exception $e) {

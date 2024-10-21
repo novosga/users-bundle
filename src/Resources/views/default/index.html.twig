@@ -13,7 +13,7 @@
                 </small>
             </h1>
         </div>
-        <div class="col-md-6 col-lg-4 text-right">
+        <div class="col-md-6 col-lg-4 text-end">
             <form class="form-inline">
                 <div class="input-group">
                     <input type="text" class="form-control" name="q" placeholder="{{ 'label.search'|trans }}" value="{{ app.request.get('q') }}">
@@ -54,7 +54,7 @@
                             <span class="text-danger">{{ 'label.disabled'|trans }}</span>
                         {% endif %}
                     </td>
-                    <td class="text-right">
+                    <td class="text-end">
                         <a href="{{ path('novosga_users_edit', { id: usuario.id }) }}" class="btn btn-secondary">
                             <i class="fa fa-edit"></i>
                         </a>
