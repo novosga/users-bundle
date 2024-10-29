@@ -4,15 +4,14 @@
 
 {% block body %}
 <div id="users-form">
-    <h1>
-        <i class="fa fa-users" aria-hidden="true"></i>
-        {{ 'title'|trans }}
-        <small>
-            {{ 'subtitle'|trans }}
-        </small>
-    </h1>
-
-    <hr>
+    <div class="d-flex">
+        <div>
+            <h1>
+                <i class="fa fa-users" aria-hidden="true"></i> {{ 'title'|trans }}
+            </h1>
+            <p>{{ 'subtitle'|trans }}</p>
+        </div>
+    </div>
 
     {{ form_start(form) }}
 
@@ -72,7 +71,7 @@
                     {% endif %}
                 </fieldset>
             </div>
-            <div class="col-6 ml-auto" id="lotacoes">
+            <div class="col-6 ms-auto" id="lotacoes">
                 <fieldset>
                     <legend>{{ 'section.lotation.title'|trans }}</legend>
 
@@ -130,14 +129,12 @@
             </div>
         </div>
 
-        <hr>
-
-        <div class="buttons">
+        <div class="d-flex">
             <button type="submit" class="btn btn-primary">
                 <i class="fa fa-check"></i> 
                 {{ 'button.save'|trans }}
             </button>
-            <a href="{{ path('novosga_users_index') }}" class="btn btn-secondary">
+            <a href="{{ path('novosga_users_index') }}" class="btn btn-link text-decoration-none ms-2">
                 <i class="fa fa-chevron-left"></i>
                 {{ 'button.back'|trans }}
             </a>
