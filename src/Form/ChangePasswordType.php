@@ -24,8 +24,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ChangePasswordType extends AbstractType
 {
-    /** {@inheritDoc} */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('senha', PasswordType::class, [
@@ -58,16 +57,14 @@ class ChangePasswordType extends AbstractType
             ]);
     }
 
-    /** {@inheritDoc} */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'translation_domain' => 'NovosgaUsersBundle',
         ]);
     }
 
-    /** {@inheritDoc} */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return '';
     }

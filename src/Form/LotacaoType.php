@@ -32,8 +32,7 @@ class LotacaoType extends AbstractType
     ) {
     }
 
-    /** {@inheritDoc} */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $ignoreList = (array) $options['ignore'];
         $usuario = $options['usuario'];
@@ -61,8 +60,7 @@ class LotacaoType extends AbstractType
         ;
     }
 
-    /** {@inheritDoc} */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([

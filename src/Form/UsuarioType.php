@@ -31,8 +31,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class UsuarioType extends AbstractType
 {
-    /** {@inheritDoc} */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $entity  = $options['data'];
         $isAdmin = $options['admin'];
@@ -110,8 +109,7 @@ class UsuarioType extends AbstractType
         }
     }
 
-    /** {@inheritDoc} */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
             ->setDefaults([
