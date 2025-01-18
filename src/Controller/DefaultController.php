@@ -278,7 +278,7 @@ class DefaultController extends AbstractController
                     }
                 }
 
-                if (!count($entity->getLotacoes())) {
+                if (!$entity->isAdmin() && !count($entity->getLotacoes())) {
                     throw new Exception($translator->trans('error.no_lotation', [], NovosgaUsersBundle::getDomain()));
                 }
 
@@ -305,8 +305,7 @@ class DefaultController extends AbstractController
 
                     $entity
                         ->setSenha($encoded)
-                        ->setAtivo(true)
-                        ->setAdmin(false);
+                        ->setAtivo(true);
                 }
 
                 $em->persist($entity);
