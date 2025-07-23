@@ -15,18 +15,27 @@ namespace Novosga\UsersBundle\Tests\Form;
 
 use Novosga\Entity\UsuarioInterface;
 use Novosga\UsersBundle\Form\UsuarioType;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\FormExtensionInterface;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\Validator\Validation;
 
 class UsuarioTypeTest extends TypeTestCase
 {
+    /** @return FormExtensionInterface[] */
+    protected function getExtensions(): array
+    {
+        $validator = Validation::createValidator();
+
+        return [
+            new ValidatorExtension($validator),
+        ];
+    }
+
     public function testSubmitValidData(): void
     {
-        $formData = [
-            'login' => 'test.user-name_123',
-            'nome' => 'Test',
-            'sobrenome' => 'User',
-            'email' => 'test@example.com',
-        ];
+        $formData = $this->buildFormData();
 
         $model = $this->createMockUsuario();
         $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
@@ -47,11 +56,8 @@ class UsuarioTypeTest extends TypeTestCase
      */
     public function testLoginValidationValidUsernames(string $login, string $message): void
     {
-        $formData = [
-            'login' => $login,
-            'nome' => 'Test',
-            'sobrenome' => 'User',
-        ];
+        $formData = $this->buildFormData();
+        $formData['login'] = $login;
 
         $model = $this->createMockUsuario();
         $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
@@ -68,11 +74,8 @@ class UsuarioTypeTest extends TypeTestCase
      */
     public function testLoginValidationInvalidUsernames(string $login, string $message): void
     {
-        $formData = [
-            'login' => $login,
-            'nome' => 'Test',
-            'sobrenome' => 'User',
-        ];
+        $formData = $this->buildFormData();
+        $formData['login'] = $login;
 
         $model = $this->createMockUsuario();
         $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
@@ -83,8 +86,6 @@ class UsuarioTypeTest extends TypeTestCase
         $this->assertFalse($form->isValid(), $message);
         $this->assertGreaterThan(0, $form->get('login')->getErrors()->count(), $message);
     }
-
-
 
     public function testRequiredFields(): void
     {
@@ -160,7 +161,7 @@ class UsuarioTypeTest extends TypeTestCase
         $this->assertTrue($form->has('ativo'));
     }
 
-    private function createMockUsuario(): UsuarioInterface
+    private function createMockUsuario(): MockObject&UsuarioInterface
     {
         $mock = $this->createMock(UsuarioInterface::class);
         $mock->method('getId')->willReturn(null);
@@ -168,9 +169,23 @@ class UsuarioTypeTest extends TypeTestCase
         return $mock;
     }
 
-    /**
-     * @return array<array{string, string}>
-     */
+    /** @return array<string,mixed> */
+    private function buildFormData(): array
+    {
+        return [
+            'login' => 'test.user-name_123',
+            'nome' => 'Test',
+            'sobrenome' => 'User',
+            'email' => 'test@example.com',
+            'lotacoesRemovidas' => '',
+            'senha' => [
+                'first' => 'password123',
+                'second' => 'password123',
+            ],
+        ];
+    }
+
+    /** @return array<array{string, string}> */
     public function validLoginDataProvider(): array
     {
         return [
@@ -186,9 +201,7 @@ class UsuarioTypeTest extends TypeTestCase
         ];
     }
 
-    /**
-     * @return array<array{string, string}>
-     */
+    /** @return array<array{string, string}> */
     public function invalidLoginDataProvider(): array
     {
         return [
