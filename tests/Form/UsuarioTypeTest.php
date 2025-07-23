@@ -16,7 +16,6 @@ namespace Novosga\UsersBundle\Tests\Form;
 use Novosga\Entity\UsuarioInterface;
 use Novosga\UsersBundle\Form\UsuarioType;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Symfony\Component\Form\FormInterface;
 
 class UsuarioTypeTest extends TypeTestCase
 {
@@ -44,9 +43,9 @@ class UsuarioTypeTest extends TypeTestCase
     }
 
     /**
-     * @dataProvider loginValidationDataProvider
+     * @dataProvider validLoginDataProvider
      */
-    public function testLoginValidation(string $login, bool $shouldBeValid, string $message): void
+    public function testLoginValidationValidUsernames(string $login, string $message): void
     {
         $formData = [
             'login' => $login,
@@ -60,64 +59,84 @@ class UsuarioTypeTest extends TypeTestCase
         $form->submit($formData);
 
         $this->assertTrue($form->isSynchronized());
-
-        if ($shouldBeValid) {
-            $this->assertTrue($form->isValid(), $message);
-            $this->assertCount(0, $form->get('login')->getErrors(), $message);
-        } else {
-            $this->assertFalse($form->isValid(), $message);
-            $this->assertGreaterThan(0, $form->get('login')->getErrors()->count(), $message);
-        }
+        $this->assertTrue($form->isValid(), $message);
+        $this->assertCount(0, $form->get('login')->getErrors(), $message);
     }
 
-    public function loginValidationDataProvider(): array
+    /**
+     * @dataProvider invalidLoginDataProvider
+     */
+    public function testLoginValidationInvalidUsernames(string $login, string $message): void
+    {
+        $formData = [
+            'login' => $login,
+            'nome' => 'Test',
+            'sobrenome' => 'User',
+        ];
+
+        $model = $this->createMockUsuario();
+        $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
+
+        $form->submit($formData);
+
+        $this->assertTrue($form->isSynchronized());
+        $this->assertFalse($form->isValid(), $message);
+        $this->assertGreaterThan(0, $form->get('login')->getErrors()->count(), $message);
+    }
+
+    public function validLoginDataProvider(): array
     {
         return [
             // Valid usernames
-            ['username', true, 'Simple username should be valid'],
-            ['user123', true, 'Username with numbers should be valid'],
-            ['user.name', true, 'Username with periods should be valid'],
-            ['user-name', true, 'Username with hyphens should be valid'],
-            ['user_name', true, 'Username with underscores should be valid'],
-            ['test.user-name_123', true, 'Username with all allowed characters should be valid'],
-            ['123', true, 'Username with only numbers should be valid'],
-            ['a.b-c_d', true, 'Username with mixed separators should be valid'],
+            ['username', 'Simple username should be valid'],
+            ['user123', 'Username with numbers should be valid'],
+            ['user.name', 'Username with periods should be valid'],
+            ['user-name', 'Username with hyphens should be valid'],
+            ['user_name', 'Username with underscores should be valid'],
+            ['test.user-name_123', 'Username with all allowed characters should be valid'],
+            ['123', 'Username with only numbers should be valid'],
+            ['a.b-c_d', 'Username with mixed separators should be valid'],
+        ];
+    }
 
+    public function invalidLoginDataProvider(): array
+    {
+        return [
             // Invalid usernames - too short
-            ['ab', false, 'Username too short should be invalid'],
-            ['a', false, 'Single character username should be invalid'],
-            ['', false, 'Empty username should be invalid'],
+            ['ab', 'Username too short should be invalid'],
+            ['a', 'Single character username should be invalid'],
+            ['', 'Empty username should be invalid'],
 
             // Invalid usernames - too long
-            [str_repeat('a', 31), false, 'Username longer than 30 characters should be invalid'],
+            [str_repeat('a', 31), 'Username longer than 30 characters should be invalid'],
 
             // Invalid usernames - invalid characters
-            ['user name', false, 'Username with spaces should be invalid'],
-            ['user@domain', false, 'Username with @ should be invalid'],
-            ['user#hash', false, 'Username with # should be invalid'],
-            ['user$money', false, 'Username with $ should be invalid'],
-            ['user%percent', false, 'Username with % should be invalid'],
-            ['user&and', false, 'Username with & should be invalid'],
-            ['user*star', false, 'Username with * should be invalid'],
-            ['user+plus', false, 'Username with + should be invalid'],
-            ['user=equal', false, 'Username with = should be invalid'],
-            ['user?question', false, 'Username with ? should be invalid'],
-            ['user!exclamation', false, 'Username with ! should be invalid'],
-            ['user(parens)', false, 'Username with parentheses should be invalid'],
-            ['user[brackets]', false, 'Username with brackets should be invalid'],
-            ['user{braces}', false, 'Username with braces should be invalid'],
-            ['user|pipe', false, 'Username with pipe should be invalid'],
-            ['user\\backslash', false, 'Username with backslash should be invalid'],
-            ['user/slash', false, 'Username with forward slash should be invalid'],
-            ['user:colon', false, 'Username with colon should be invalid'],
-            ['user;semicolon', false, 'Username with semicolon should be invalid'],
-            ['user"quote', false, 'Username with quote should be invalid'],
-            ["user'apostrophe", false, 'Username with apostrophe should be invalid'],
-            ['user<less', false, 'Username with less than should be invalid'],
-            ['user>greater', false, 'Username with greater than should be invalid'],
-            ['user,comma', false, 'Username with comma should be invalid'],
-            ['user~tilde', false, 'Username with tilde should be invalid'],
-            ['user`backtick', false, 'Username with backtick should be invalid'],
+            ['user name', 'Username with spaces should be invalid'],
+            ['user@domain', 'Username with @ should be invalid'],
+            ['user#hash', 'Username with # should be invalid'],
+            ['user$money', 'Username with $ should be invalid'],
+            ['user%percent', 'Username with % should be invalid'],
+            ['user&and', 'Username with & should be invalid'],
+            ['user*star', 'Username with * should be invalid'],
+            ['user+plus', 'Username with + should be invalid'],
+            ['user=equal', 'Username with = should be invalid'],
+            ['user?question', 'Username with ? should be invalid'],
+            ['user!exclamation', 'Username with ! should be invalid'],
+            ['user(parens)', 'Username with parentheses should be invalid'],
+            ['user[brackets]', 'Username with brackets should be invalid'],
+            ['user{braces}', 'Username with braces should be invalid'],
+            ['user|pipe', 'Username with pipe should be invalid'],
+            ['user\\backslash', 'Username with backslash should be invalid'],
+            ['user/slash', 'Username with forward slash should be invalid'],
+            ['user:colon', 'Username with colon should be invalid'],
+            ['user;semicolon', 'Username with semicolon should be invalid'],
+            ['user"quote', 'Username with quote should be invalid'],
+            ["user'apostrophe", 'Username with apostrophe should be invalid'],
+            ['user<less', 'Username with less than should be invalid'],
+            ['user>greater', 'Username with greater than should be invalid'],
+            ['user,comma', 'Username with comma should be invalid'],
+            ['user~tilde', 'Username with tilde should be invalid'],
+            ['user`backtick', 'Username with backtick should be invalid'],
         ];
     }
 
@@ -133,7 +152,7 @@ class UsuarioTypeTest extends TypeTestCase
 
         // Login field should have errors (required)
         $this->assertGreaterThan(0, $form->get('login')->getErrors()->count());
-        
+
         // Nome field should have errors (required)
         $this->assertGreaterThan(0, $form->get('nome')->getErrors()->count());
     }
@@ -199,7 +218,7 @@ class UsuarioTypeTest extends TypeTestCase
     {
         $mock = $this->createMock(UsuarioInterface::class);
         $mock->method('getId')->willReturn(null);
-        
+
         return $mock;
     }
 }
