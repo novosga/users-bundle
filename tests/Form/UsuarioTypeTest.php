@@ -84,61 +84,7 @@ class UsuarioTypeTest extends TypeTestCase
         $this->assertGreaterThan(0, $form->get('login')->getErrors()->count(), $message);
     }
 
-    public function validLoginDataProvider(): array
-    {
-        return [
-            // Valid usernames
-            ['username', 'Simple username should be valid'],
-            ['user123', 'Username with numbers should be valid'],
-            ['user.name', 'Username with periods should be valid'],
-            ['user-name', 'Username with hyphens should be valid'],
-            ['user_name', 'Username with underscores should be valid'],
-            ['test.user-name_123', 'Username with all allowed characters should be valid'],
-            ['123', 'Username with only numbers should be valid'],
-            ['a.b-c_d', 'Username with mixed separators should be valid'],
-        ];
-    }
 
-    public function invalidLoginDataProvider(): array
-    {
-        return [
-            // Invalid usernames - too short
-            ['ab', 'Username too short should be invalid'],
-            ['a', 'Single character username should be invalid'],
-            ['', 'Empty username should be invalid'],
-
-            // Invalid usernames - too long
-            [str_repeat('a', 31), 'Username longer than 30 characters should be invalid'],
-
-            // Invalid usernames - invalid characters
-            ['user name', 'Username with spaces should be invalid'],
-            ['user@domain', 'Username with @ should be invalid'],
-            ['user#hash', 'Username with # should be invalid'],
-            ['user$money', 'Username with $ should be invalid'],
-            ['user%percent', 'Username with % should be invalid'],
-            ['user&and', 'Username with & should be invalid'],
-            ['user*star', 'Username with * should be invalid'],
-            ['user+plus', 'Username with + should be invalid'],
-            ['user=equal', 'Username with = should be invalid'],
-            ['user?question', 'Username with ? should be invalid'],
-            ['user!exclamation', 'Username with ! should be invalid'],
-            ['user(parens)', 'Username with parentheses should be invalid'],
-            ['user[brackets]', 'Username with brackets should be invalid'],
-            ['user{braces}', 'Username with braces should be invalid'],
-            ['user|pipe', 'Username with pipe should be invalid'],
-            ['user\\backslash', 'Username with backslash should be invalid'],
-            ['user/slash', 'Username with forward slash should be invalid'],
-            ['user:colon', 'Username with colon should be invalid'],
-            ['user;semicolon', 'Username with semicolon should be invalid'],
-            ['user"quote', 'Username with quote should be invalid'],
-            ["user'apostrophe", 'Username with apostrophe should be invalid'],
-            ['user<less', 'Username with less than should be invalid'],
-            ['user>greater', 'Username with greater than should be invalid'],
-            ['user,comma', 'Username with comma should be invalid'],
-            ['user~tilde', 'Username with tilde should be invalid'],
-            ['user`backtick', 'Username with backtick should be invalid'],
-        ];
-    }
 
     public function testRequiredFields(): void
     {
@@ -195,7 +141,7 @@ class UsuarioTypeTest extends TypeTestCase
     public function testNewUserHasPasswordField(): void
     {
         $model = $this->createMockUsuario();
-        $model->method('getId')->willReturn(null);
+        // Mock is already configured to return null for getId() in createMockUsuario()
 
         $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
 
@@ -205,7 +151,7 @@ class UsuarioTypeTest extends TypeTestCase
 
     public function testExistingUserHasAtivoFieldButNotPassword(): void
     {
-        $model = $this->createMockUsuario();
+        $model = $this->createMock(UsuarioInterface::class);
         $model->method('getId')->willReturn(123);
 
         $form = $this->factory->create(UsuarioType::class, $model, ['admin' => false]);
@@ -220,5 +166,67 @@ class UsuarioTypeTest extends TypeTestCase
         $mock->method('getId')->willReturn(null);
 
         return $mock;
+    }
+
+    /**
+     * @return array<array{string, string}>
+     */
+    public function validLoginDataProvider(): array
+    {
+        return [
+            // Valid usernames
+            ['username', 'Simple username should be valid'],
+            ['user123', 'Username with numbers should be valid'],
+            ['user.name', 'Username with periods should be valid'],
+            ['user-name', 'Username with hyphens should be valid'],
+            ['user_name', 'Username with underscores should be valid'],
+            ['test.user-name_123', 'Username with all allowed characters should be valid'],
+            ['123', 'Username with only numbers should be valid'],
+            ['a.b-c_d', 'Username with mixed separators should be valid'],
+        ];
+    }
+
+    /**
+     * @return array<array{string, string}>
+     */
+    public function invalidLoginDataProvider(): array
+    {
+        return [
+            // Invalid usernames - too short
+            ['ab', 'Username too short should be invalid'],
+            ['a', 'Single character username should be invalid'],
+            ['', 'Empty username should be invalid'],
+
+            // Invalid usernames - too long
+            [str_repeat('a', 31), 'Username longer than 30 characters should be invalid'],
+
+            // Invalid usernames - invalid characters
+            ['user name', 'Username with spaces should be invalid'],
+            ['user@domain', 'Username with @ should be invalid'],
+            ['user#hash', 'Username with # should be invalid'],
+            ['user$money', 'Username with $ should be invalid'],
+            ['user%percent', 'Username with % should be invalid'],
+            ['user&and', 'Username with & should be invalid'],
+            ['user*star', 'Username with * should be invalid'],
+            ['user+plus', 'Username with + should be invalid'],
+            ['user=equal', 'Username with = should be invalid'],
+            ['user?question', 'Username with ? should be invalid'],
+            ['user!exclamation', 'Username with ! should be invalid'],
+            ['user(parens)', 'Username with parentheses should be invalid'],
+            ['user[brackets]', 'Username with brackets should be invalid'],
+            ['user{braces}', 'Username with braces should be invalid'],
+            ['user|pipe', 'Username with pipe should be invalid'],
+            ['user\\backslash', 'Username with backslash should be invalid'],
+            ['user/slash', 'Username with forward slash should be invalid'],
+            ['user:colon', 'Username with colon should be invalid'],
+            ['user;semicolon', 'Username with semicolon should be invalid'],
+            ['user"quote', 'Username with quote should be invalid'],
+            ["user'apostrophe", 'Username with apostrophe should be invalid'],
+            ['user<less', 'Username with less than should be invalid'],
+            ['user>greater', 'Username with greater than should be invalid'],
+            ['user,comma', 'Username with comma should be invalid'],
+            ['user~tilde', 'Username with tilde should be invalid'],
+            ['user`backtick', 'Username with backtick should be invalid'],
+        ];
     }
 }
