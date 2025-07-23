@@ -40,12 +40,12 @@ class UsuarioType extends AbstractType
             ->add('login', TextType::class, [
                 'attr' => [
                     'maxlength' => 30,
-                    'oninput' => "this.value = this.value.replace(/([^\w\d\.])+/g, '')",
+                    'oninput' => "this.value = this.value.replace(/([^\w\d\.\-_])+/g, '')",
                 ],
                 'constraints' => [
                     new NotBlank(),
                     new Length([ 'min' => 3, 'max' => 30 ]),
-                    new Regex("/^[a-zA-Z0-9\.]+$/"),
+                    new Regex("/^[a-zA-Z0-9\.\-_]+$/"),
                 ],
                 'label' => 'form.user.userIdentifier',
             ])
