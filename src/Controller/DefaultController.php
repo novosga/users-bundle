@@ -216,23 +216,21 @@ class DefaultController extends AbstractController
         $lotacoesRemovidas = [];
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                /** @var int[] */
+                /** @var string[] */
                 $unidadesRemovidas = explode(',', $form->get('lotacoesRemovidas')->getData() ?? '');
 
-                if (is_array($unidadesRemovidas) && count($unidadesRemovidas)) {
-                    foreach ($unidadesRemovidas as $lotacaoId) {
-                        foreach ($entity->getLotacoes() as $lotacao) {
-                            if ($lotacao->getId() === (int) $lotacaoId) {
-                                if (!$isAdmin && !in_array($lotacao->getUnidade(), $unidades)) {
-                                    $error = $translator->trans('error.remove_lotation_permission_denied', [
-                                        '%unidade%' => $lotacao->getUnidade(),
-                                    ], NovosgaUsersBundle::getDomain());
+                foreach ($unidadesRemovidas as $lotacaoId) {
+                    foreach ($entity->getLotacoes() as $lotacao) {
+                        if ($lotacao->getId() === (int) $lotacaoId) {
+                            if (!$isAdmin && !in_array($lotacao->getUnidade(), $unidades)) {
+                                $error = $translator->trans('error.remove_lotation_permission_denied', [
+                                    '%unidade%' => $lotacao->getUnidade(),
+                                ], NovosgaUsersBundle::getDomain());
 
-                                    throw new Exception($error);
-                                }
-                                $lotacoesRemovidas[] = $lotacao;
-                                $entity->getLotacoes()->removeElement($lotacao);
+                                throw new Exception($error);
                             }
+                            $lotacoesRemovidas[] = $lotacao;
+                            $entity->getLotacoes()->removeElement($lotacao);
                         }
                     }
                 }

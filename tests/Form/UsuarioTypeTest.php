@@ -15,6 +15,7 @@ namespace Novosga\UsersBundle\Tests\Form;
 
 use Novosga\Entity\UsuarioInterface;
 use Novosga\UsersBundle\Form\UsuarioType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\FormExtensionInterface;
@@ -51,9 +52,7 @@ class UsuarioTypeTest extends TypeTestCase
         $this->assertEquals($formData['email'], $form->get('email')->getData());
     }
 
-    /**
-     * @dataProvider validLoginDataProvider
-     */
+    #[DataProvider('validLoginDataProvider')]
     public function testLoginValidationValidUsernames(string $login, string $message): void
     {
         $formData = $this->buildFormData();
@@ -69,9 +68,7 @@ class UsuarioTypeTest extends TypeTestCase
         $this->assertCount(0, $form->get('login')->getErrors(), $message);
     }
 
-    /**
-     * @dataProvider invalidLoginDataProvider
-     */
+    #[DataProvider('invalidLoginDataProvider')]
     public function testLoginValidationInvalidUsernames(string $login, string $message): void
     {
         $formData = $this->buildFormData();
@@ -186,7 +183,7 @@ class UsuarioTypeTest extends TypeTestCase
     }
 
     /** @return array<array{string, string}> */
-    public function validLoginDataProvider(): array
+    public static function validLoginDataProvider(): array
     {
         return [
             // Valid usernames
@@ -202,7 +199,7 @@ class UsuarioTypeTest extends TypeTestCase
     }
 
     /** @return array<array{string, string}> */
-    public function invalidLoginDataProvider(): array
+    public static function invalidLoginDataProvider(): array
     {
         return [
             // Invalid usernames - too short
