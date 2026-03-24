@@ -235,8 +235,8 @@ class DefaultController extends AbstractController
                     }
                 }
 
-                $novasUnidades = (array) $request->request->get('novasUnidades');
-                $novosPerfis = (array) $request->request->get('novosPerfis');
+                $novasUnidades = (array) $request->request->all('novasUnidades');
+                $novosPerfis = (array) $request->request->all('novosPerfis');
 
                 if (count($novasUnidades) && count($novosPerfis)) {
                     for ($i = 0; $i < count($novasUnidades); $i++) {

@@ -64,11 +64,11 @@
                     this.add({
                         unidade: {
                             id: unidade.value,
-                            nome: unidade.innerText,
+                            nome: unidade.querySelector(`option[value="${unidade.value}"]`).innerText,
                         },
                         perfil: {
                             id: perfil.value,
-                            nome: perfil.innerText,
+                            nome: perfil.querySelector(`option[value="${perfil.value}"]`).innerText,
                         }
                     });
                 }
