@@ -54,7 +54,7 @@ class DefaultController extends AbstractController
         Request $request,
         UsuarioRepositoryInterface $repository,
     ): Response {
-        $search  = $request->get('q');
+        $search  = $request->query->get('q');
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
@@ -94,7 +94,7 @@ class DefaultController extends AbstractController
 
         $query = $qb->getQuery();
 
-        $currentPage = max(1, (int) $request->get('p'));
+        $currentPage = max(1, (int) $request->query->get('p'));
 
         $adapter    = new QueryAdapter($query);
         $view       = new TwitterBootstrap5View();
@@ -106,7 +106,7 @@ class DefaultController extends AbstractController
         $html = $view->render(
             $pagerfanta,
             function ($page) use ($request, $path) {
-                $q = $request->get('q');
+                $q = $request->query->get('q');
                 return "{$path}?q={$q}&p={$page}";
             },
             [
@@ -235,10 +235,10 @@ class DefaultController extends AbstractController
                     }
                 }
 
-                $novasUnidades = $request->get('novasUnidades');
-                $novosPerfis = $request->get('novosPerfis');
+                $novasUnidades = (array) $request->request->get('novasUnidades');
+                $novosPerfis = (array) $request->request->get('novosPerfis');
 
-                if (is_array($novasUnidades) && count($novasUnidades) && count($novosPerfis)) {
+                if (count($novasUnidades) && count($novosPerfis)) {
                     for ($i = 0; $i < count($novasUnidades); $i++) {
                         $unidade = $unidadeRepository->find($novasUnidades[$i]);
                         $perfil  = $perfilRepository->find($novosPerfis[$i]);
@@ -354,7 +354,7 @@ class DefaultController extends AbstractController
         $usuario = $this->getUser();
         $lotacao = $lotacaoService->build();
 
-        $ignore = array_filter(explode(',', $request->get('ignore')), function ($id) {
+        $ignore = array_filter(explode(',', $request->query->get('ignore')), function ($id) {
             return $id > 0;
         });
 
